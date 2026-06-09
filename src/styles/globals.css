@@ -1,0 +1,142 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* MULBERRY (Primary) */
+  --color-mulberry-50:  #FFEDF7;
+  --color-mulberry-100: #FFD9EC;
+  --color-mulberry-200: #FFBCDA;
+  --color-mulberry-300: #FF99C7;
+  --color-mulberry-400: #F272B0;
+  --color-mulberry-500: #E0539B;
+  --color-mulberry-600: #C83B86;
+  --color-mulberry-700: #AE2571;
+  --color-mulberry-800: #91155C;
+  --color-mulberry-900: #711247;
+  --color-mulberry-950: #520F33;
+
+  /* SAN MARINO (Base / Secondary) */
+  --color-sanmarino-50:  #F4F6FB;
+  --color-sanmarino-100: #E9EDF5;
+  --color-sanmarino-200: #CED8E9;
+  --color-sanmarino-300: #A2B7D7;
+  --color-sanmarino-400: #7091C0;
+  --color-sanmarino-500: #4E73A9;
+  --color-sanmarino-600: #3D5D91;
+  --color-sanmarino-700: #314973;
+  --color-sanmarino-800: #2C3F60;
+  --color-sanmarino-900: #293751;
+  --color-sanmarino-950: #1B2436;
+
+  /* Contessa + alert scales: full ramps deferred. Semantic aliases below. */
+
+  /* SEMANTIC — Backgrounds */
+  --color-bg-app:       #F4F6FB;
+  --color-bg-surface:   #FFFFFF;
+  --color-bg-highlight: #E9EDF5;
+  --color-bg-tooltip:   #1B2436;
+
+  /* SEMANTIC — Text */
+  --color-text-headline:  #1B2436;
+  --color-text-paragraph: #2C3F60;
+  --color-text-secondary: rgb(61 93 145 / 0.9);
+  --color-text-muted:     #A2B7D7;
+
+  /* SEMANTIC — Borders */
+  --color-border:           rgb(206 216 233 / 0.55);
+  --color-border-highlight: #A2B7D7;
+
+  /* SEMANTIC — Actions */
+  --color-action:       #C83B86;
+  --color-action-hover: #AE2571;
+  --color-action-2:     #314973;
+
+  /* SEMANTIC — Alerts (semantic only, full ramps deferred) */
+  --color-info:    #5E78F6;
+  --color-success: #4DAA57;
+  --color-pending: #EABB08;
+  --color-warning: #DD6031;
+  --color-danger:  #FF3B2A;
+
+  /* TYPE */
+  --font-display: "Domine", ui-serif, Georgia, serif;
+  --font-sans:    "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  /* RADII (matches Figma variables) */
+  --radius-none: 0px;
+  --radius-xs:   2px;
+  --radius-sm:   4px;
+  --radius-md:   6px;
+  --radius-lg:   8px;
+  --radius-xl:   10px;
+  --radius-2xl:  12px;
+  --radius-3xl:  16px;
+  --radius-4xl:  24px;
+  --radius-5xl:  32px;
+  --radius-full: 9999px;
+}
+
+/* shadcn semantic variables — wired to our locked tokens via :root, exposed
+   to Tailwind utilities (bg-primary, text-foreground, etc.) via @theme inline. */
+@theme inline {
+  --color-background:          var(--background);
+  --color-foreground:          var(--foreground);
+  --color-card:                var(--card);
+  --color-card-foreground:     var(--card-foreground);
+  --color-popover:             var(--popover);
+  --color-popover-foreground:  var(--popover-foreground);
+  --color-primary:             var(--primary);
+  --color-primary-foreground:  var(--primary-foreground);
+  --color-secondary:           var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:               var(--muted);
+  --color-muted-foreground:    var(--muted-foreground);
+  --color-accent:              var(--accent);
+  --color-accent-foreground:   var(--accent-foreground);
+  --color-destructive:         var(--destructive);
+  --color-ring:                var(--ring);
+  --color-input:               var(--input);
+  /* NOTE: --color-border is intentionally not re-declared here. Our @theme
+     block above defines it as rgb(206 216 233 / 0.55) and we want that to win. */
+}
+
+:root {
+  /* shadcn slots, pointing at our locked semantic tokens */
+  --background:           var(--color-bg-app);
+  --foreground:           var(--color-text-paragraph);
+  --card:                 var(--color-bg-surface);
+  --card-foreground:      var(--color-text-paragraph);
+  --popover:              var(--color-bg-surface);
+  --popover-foreground:   var(--color-text-paragraph);
+  --primary:              var(--color-action);
+  --primary-foreground:   #ffffff;
+  --secondary:            var(--color-action-2);
+  --secondary-foreground: #ffffff;
+  --muted:                var(--color-bg-highlight);
+  --muted-foreground:     var(--color-text-muted);
+  --accent:               var(--color-bg-highlight);
+  --accent-foreground:    var(--color-text-headline);
+  --destructive:          var(--color-danger);
+  --ring:                 var(--color-action);
+  --input:                var(--color-border);
+
+  /* shadcn's --radius (referenced directly by some components) — set to our lg */
+  --radius:               0.5rem;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-background text-foreground;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-text-headline;
+  }
+
+  * {
+    @apply border-border;
+  }
+}
