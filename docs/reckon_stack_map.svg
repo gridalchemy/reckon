@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 840 940" xmlns="http://www.w3.org/2000/svg" role="img" font-family="ui-sans-serif, system-ui, -apple-system, sans-serif">
+  <title>Reckon stack interdependency map</title>
+  <desc>Five-tier map. Tier 1: source files you author (index.html, TSX, globals.css). Tier 2: libraries (React 19, Tailwind v4, shadcn base-nova on Base UI, helper libs). Tier 3: Vite plus the TypeScript compiler bundle everything. Tier 4: GitHub push triggers Cloudflare Pages deploy; a Cloudflare Worker proxies Anthropic. Tier 5: the browser runs the bundle, fetches Google Fonts, reads/writes IndexedDB.</desc>
+
+  <!-- white background so the file opens cleanly in any viewer -->
+  <rect x="0" y="0" width="840" height="940" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b6b6b"/>
+    </marker>
+    <marker id="arrow2-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7a3b6f"/>
+    </marker>
+  </defs>
+
+  <style>
+    .tier-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; fill: #4a4a4a; text-transform: uppercase; }
+    .tier-hint  { font-size: 10px; fill: #6b6b6b; }
+    .box-title  { font-size: 13px; font-weight: 700; fill: #1a1a1a; }
+    .box-sub    { font-size: 11px; fill: #4a4a4a; }
+    .edge-note  { font-size: 10px; font-style: italic; fill: #6b6b6b; }
+    .flow-line  { stroke: #6b6b6b; stroke-width: 1.2; fill: none; }
+    .flow-accent{ stroke: #7a3b6f; stroke-width: 1.5; fill: none; stroke-dasharray: 4 3; }
+    .tier-rule  { stroke: #d4d4d4; stroke-width: 1; }
+    .box        { fill: #f7f5f3; stroke: #c9c4be; stroke-width: 1; }
+    .box-accent { fill: #f4ecf2; stroke: #7a3b6f; stroke-width: 1.3; }
+  </style>
+
+  <!-- ============== TIER 1: SOURCE FILES ============== -->
+  <line class="tier-rule" x1="30" y1="30" x2="810" y2="30"/>
+  <text class="tier-label" x="30" y="22">1 · You author</text>
+  <text class="tier-hint"  x="810" y="22" text-anchor="end">plain files in the repo</text>
+
+  <rect class="box" x="50"  y="50" width="230" height="74" rx="8"/>
+  <text class="box-title" x="65" y="76">index.html</text>
+  <text class="box-sub"   x="65" y="94">Page shell. Mounts #root,</text>
+  <text class="box-sub"   x="65" y="108">loads Google Font &lt;link&gt; tags.</text>
+
+  <rect class="box" x="305" y="50" width="230" height="74" rx="8"/>
+  <text class="box-title" x="320" y="76">src/**/*.tsx · *.ts</text>
+  <text class="box-sub"   x="320" y="94">Components, hooks, types.</text>
+  <text class="box-sub"   x="320" y="108">TypeScript + JSX, @/ alias.</text>
+
+  <rect class="box" x="560" y="50" width="230" height="74" rx="8"/>
+  <text class="box-title" x="575" y="76">styles/globals.css</text>
+  <text class="box-sub"   x="575" y="94">@theme tokens — single</text>
+  <text class="box-sub"   x="575" y="108">source of truth, mirrors Figma.</text>
+
+  <path class="flow-line" d="M 165 124 V 178" marker-end="url(#arrow2)"/>
+  <path class="flow-line" d="M 420 124 V 178" marker-end="url(#arrow2)"/>
+  <path class="flow-line" d="M 675 124 V 178" marker-end="url(#arrow2)"/>
+
+  <!-- ============== TIER 2: LIBRARIES ============== -->
+  <line class="tier-rule" x1="30" y1="188" x2="810" y2="188"/>
+  <text class="tier-label" x="30" y="180">2 · Libraries shape what you write</text>
+  <text class="tier-hint"  x="810" y="180" text-anchor="end">npm packages · shadcn is the exception</text>
+
+  <rect class="box" x="50"  y="200" width="175" height="92" rx="8"/>
+  <text class="box-title" x="65" y="226">React 19</text>
+  <text class="box-sub"   x="65" y="244">Component &amp; state model.</text>
+  <text class="box-sub"   x="65" y="258">Renders TSX into the DOM</text>
+  <text class="box-sub"   x="65" y="272">at runtime.</text>
+
+  <rect class="box" x="240" y="200" width="175" height="92" rx="8"/>
+  <text class="box-title" x="255" y="226">Tailwind v4</text>
+  <text class="box-sub"   x="255" y="244">Reads @theme block,</text>
+  <text class="box-sub"   x="255" y="258">generates utility classes</text>
+  <text class="box-sub"   x="255" y="272">(bg-action, text-headline…).</text>
+
+  <rect class="box-accent" x="430" y="200" width="175" height="92" rx="8"/>
+  <text class="box-title" x="445" y="226">shadcn (base-nova)</text>
+  <text class="box-sub"   x="445" y="244">Copied INTO src/components/ui</text>
+  <text class="box-sub"   x="445" y="258">— you own &amp; edit the files.</text>
+  <text class="box-sub"   x="445" y="272">Built on Base UI primitives.</text>
+
+  <rect class="box" x="620" y="200" width="175" height="92" rx="8"/>
+  <text class="box-title" x="635" y="226">Helper libs</text>
+  <text class="box-sub"   x="635" y="244">Lucide (icons), idb</text>
+  <text class="box-sub"   x="635" y="258">(IndexedDB wrapper),</text>
+  <text class="box-sub"   x="635" y="272">fuse.js, date-fns.</text>
+
+  <path class="flow-line" d="M 137 292 V 348" marker-end="url(#arrow2)"/>
+  <path class="flow-line" d="M 327 292 V 348" marker-end="url(#arrow2)"/>
+  <path class="flow-line" d="M 517 292 V 348" marker-end="url(#arrow2)"/>
+  <path class="flow-line" d="M 707 292 V 348" marker-end="url(#arrow2)"/>
+
+  <!-- ============== TIER 3: BUILD ============== -->
+  <line class="tier-rule" x1="30" y1="358" x2="810" y2="358"/>
+  <text class="tier-label" x="30" y="350">3 · Vite + tsc bundle it</text>
+  <text class="tier-hint"  x="810" y="350" text-anchor="end">npm run dev / npm run build</text>
+
+  <rect class="box" x="50" y="370" width="745" height="92" rx="8"/>
+  <text class="box-title" x="65" y="396">Vite  +  TypeScript compiler  +  Tailwind processor</text>
+  <text class="box-sub"   x="65" y="416">Vite (esbuild in dev, Rollup for prod) resolves @/ alias, compiles TSX, runs Tailwind v4’s PostCSS plugin</text>
+  <text class="box-sub"   x="65" y="432">over globals.css → flat CSS. tsc -b type-checks. Output: static /dist (HTML + JS + CSS, no server needed).</text>
+  <text class="box-sub"   x="65" y="452">Dev server gives HMR at localhost:5173. Production output is what Cloudflare ships.</text>
+
+  <path class="flow-line" d="M 420 462 V 510" marker-end="url(#arrow2)"/>
+
+  <!-- ============== TIER 4: GIT + CLOUDFLARE ============== -->
+  <line class="tier-rule" x1="30" y1="520" x2="810" y2="520"/>
+  <text class="tier-label" x="30" y="512">4 · Git → Cloudflare</text>
+  <text class="tier-hint"  x="810" y="512" text-anchor="end">push to main is the deploy trigger</text>
+
+  <rect class="box" x="50" y="532" width="230" height="92" rx="8"/>
+  <text class="box-title" x="65" y="558">Git → GitHub</text>
+  <text class="box-sub"   x="65" y="576">Local commits push to the</text>
+  <text class="box-sub"   x="65" y="590">main branch on GitHub.</text>
+  <text class="box-sub"   x="65" y="608">main = source of truth.</text>
+
+  <rect class="box" x="305" y="532" width="230" height="92" rx="8"/>
+  <text class="box-title" x="320" y="558">Cloudflare Pages</text>
+  <text class="box-sub"   x="320" y="576">Watches main. On push:</text>
+  <text class="box-sub"   x="320" y="590">runs vite build, serves /dist</text>
+  <text class="box-sub"   x="320" y="608">at reckon-a5q.pages.dev.</text>
+
+  <rect class="box-accent" x="560" y="532" width="230" height="92" rx="8"/>
+  <text class="box-title" x="575" y="558">Cloudflare Worker (Wk 4)</text>
+  <text class="box-sub"   x="575" y="576">Separate tiny server.</text>
+  <text class="box-sub"   x="575" y="590">Proxies Anthropic API calls,</text>
+  <text class="box-sub"   x="575" y="608">hides the key from the browser.</text>
+
+  <path class="flow-line" d="M 280 578 H 305" marker-end="url(#arrow2)"/>
+  <path class="flow-line" d="M 420 624 V 678" marker-end="url(#arrow2)"/>
+  <path class="flow-accent" d="M 675 624 V 678" marker-end="url(#arrow2-accent)"/>
+
+  <!-- ============== TIER 5: BROWSER RUNTIME ============== -->
+  <line class="tier-rule" x1="30" y1="688" x2="810" y2="688"/>
+  <text class="tier-label" x="30" y="680">5 · Browser runs the app</text>
+  <text class="tier-hint"  x="810" y="680" text-anchor="end">what the user actually sees</text>
+
+  <rect class="box" x="50" y="700" width="230" height="100" rx="8"/>
+  <text class="box-title" x="65" y="726">User’s browser</text>
+  <text class="box-sub"   x="65" y="744">Loads index.html, then JS</text>
+  <text class="box-sub"   x="65" y="758">boots React, which renders</text>
+  <text class="box-sub"   x="65" y="772">the component tree using</text>
+  <text class="box-sub"   x="65" y="786">the bundled CSS classes.</text>
+
+  <rect class="box" x="305" y="700" width="230" height="100" rx="8"/>
+  <text class="box-title" x="320" y="726">Google Fonts CDN</text>
+  <text class="box-sub"   x="320" y="744">Domine, Space Grotesk,</text>
+  <text class="box-sub"   x="320" y="758">JetBrains Mono — fetched</text>
+  <text class="box-sub"   x="320" y="772">by the &lt;link&gt; tags from</text>
+  <text class="box-sub"   x="320" y="786">index.html.</text>
+
+  <rect class="box" x="560" y="700" width="230" height="100" rx="8"/>
+  <text class="box-title" x="575" y="726">IndexedDB (via idb)</text>
+  <text class="box-sub"   x="575" y="744">Browser-local database.</text>
+  <text class="box-sub"   x="575" y="758">Sketches &amp; Decisions live</text>
+  <text class="box-sub"   x="575" y="772">here in v0.1 — no server,</text>
+  <text class="box-sub"   x="575" y="786">no sync.</text>
+
+  <rect class="box-accent" x="305" y="820" width="230" height="50" rx="8"/>
+  <text class="box-title" x="320" y="842">Anthropic API</text>
+  <text class="box-sub"   x="320" y="860">Reached only via the Worker.</text>
+
+  <path class="flow-accent" d="M 420 800 V 820" marker-end="url(#arrow2-accent)"/>
+
+  <text class="edge-note" x="575" y="842">— — accent dashed path =</text>
+  <text class="edge-note" x="575" y="858">the AI round-trip (Reckoning).</text>
+
+  <!-- ============== FOOTER LEGEND ============== -->
+  <line class="tier-rule" x1="30" y1="890" x2="810" y2="890"/>
+  <text class="tier-label" x="30" y="910">Legend</text>
+
+  <line x1="120" y1="908" x2="160" y2="908" stroke="#6b6b6b" stroke-width="1.2" marker-end="url(#arrow2)"/>
+  <text class="box-sub" x="170" y="912">solid grey — build &amp; deploy flow (authoring → runtime)</text>
+
+  <line x1="120" y1="928" x2="160" y2="928" stroke="#7a3b6f" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow2-accent)"/>
+  <text class="box-sub" x="170" y="932">dashed accent — the AI round-trip: browser → Cloudflare Worker → Anthropic API → back</text>
+</svg>
