@@ -33,27 +33,64 @@
   /* Contessa + alert scales: full ramps deferred. Semantic aliases below. */
 
   /* SEMANTIC — Backgrounds */
-  --color-bg-app:       #F4F6FB;
-  --color-bg-surface:   #FFFFFF;
-  --color-bg-highlight: #E9EDF5;
-  --color-bg-tooltip:   #1B2436;
-
-  /* SEMANTIC — Text */
-  --color-text-headline:  #1B2436;
-  --color-text-paragraph: #2C3F60;
-  --color-text-secondary: rgb(61 93 145 / 0.9);
-  --color-text-muted:     #A2B7D7;
+  --color-bg-page:            #F4F6FB;
+  --color-bg-surface:         #FFFFFF;
+  --color-bg-sidebar:         #FFFFFF;
+  --color-bg-sunken:          #F4F6FB;
+  --color-bg-hover:           #F4F6FB;
+  --color-bg-accent:          #FFEDF7;
+  --color-bg-highlight:       #E9EDF5;
+  --color-bg-tooltip:         #1B2436;
+  --color-bg-input-addon:     #F4F6FB;
+  --color-bg-chart-bar:       #4E73A9;
+  --color-bg-chart-bar-today: #E0539B;
+  --color-bg-success:         #E3F5E4;
 
   /* SEMANTIC — Borders */
-  --color-border:           rgb(206 216 233 / 0.55);
+  --color-border-default:   rgb(206 216 233 / 0.55);
   --color-border-highlight: #A2B7D7;
+  --color-border-focus:     #C83B86;
+  --color-border-divider:   #E9EDF5;
+  --color-border-success:   #C9E9CC;
+
+  /* SEMANTIC — Text */
+  --color-text-headline:   #1B2436;
+  --color-text-paragraph:  #2C3F60;
+  --color-text-secondary:  rgb(61 93 145 / 0.9);
+  --color-text-strong:     #3D5D91;
+  --color-text-muted:      #A2B7D7;
+  --color-text-disabled:   #A2B7D7;
+  --color-text-action:     #C83B86;
+  --color-text-on-action:  #FFFFFF;
+  --color-text-on-accent:  #AE2571;
+  --color-text-on-success: #2E6734;
+
+  /* SEMANTIC — Icons */
+  --color-icon-headline:   #1B2436;
+  --color-icon-paragraph:  #2C3F60;
+  --color-icon-default:    #3D5D91;
+  --color-icon-secondary:  rgb(61 93 145 / 0.9);
+  --color-icon-muted:      #A2B7D7;
+  --color-icon-disabled:   #A2B7D7;
+  --color-icon-action:     #C83B86;
+  --color-icon-on-action:  #FFFFFF;
+  --color-icon-on-accent:  #AE2571;
+  --color-icon-on-success: #2E6734;
 
   /* SEMANTIC — Actions */
-  --color-action:       #C83B86;
-  --color-action-hover: #AE2571;
-  --color-action-2:     #314973;
+  --color-action-primary:         #C83B86;
+  --color-action-primary-hover:   #AE2571;
+  --color-action-secondary:       #314973;
+  --color-action-secondary-hover: #2C3F60;
 
-  /* SEMANTIC — Alerts (semantic only, full ramps deferred) */
+  /* SEMANTIC — Status (vivid; soft surfaces use bg/success + friends) */
+  --color-status-info:    #5E78F6;
+  --color-status-success: #4DAA57;
+  --color-status-pending: #EABB08;
+  --color-status-warning: #DD6031;
+  --color-status-danger:  #FF3B2A;
+
+  /* SEMANTIC — Alerts (legacy aliases; kept until v0.2 status migration completes) */
   --color-info:    #5E78F6;
   --color-success: #4DAA57;
   --color-pending: #EABB08;
@@ -77,6 +114,15 @@
   --radius-4xl:  24px;
   --radius-5xl:  32px;
   --radius-full: 9999px;
+
+  /* SHADOWS (Effect Styles from Figma) */
+  --shadow-xs:    0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm:    0 1px 2px 0 rgb(0 0 0 / 0.10);
+  --shadow-md:    0 4px 6px -1px rgb(0 0 0 / 0.10), 0 2px 4px -2px rgb(0 0 0 / 0.10);
+  --shadow-lg:    0 10px 15px -3px rgb(0 0 0 / 0.10), 0 4px 6px -4px rgb(0 0 0 / 0.10);
+  --shadow-xl:    0 20px 25px -5px rgb(0 0 0 / 0.10), 0 8px 10px -6px rgb(0 0 0 / 0.10);
+  --shadow-2xl:   0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-focus: 0 0 0 3px rgb(200 59 134 / 0.30);
 }
 
 /* shadcn semantic variables — wired to our locked tokens via :root, exposed
@@ -99,29 +145,27 @@
   --color-destructive:         var(--destructive);
   --color-ring:                var(--ring);
   --color-input:               var(--input);
-  /* NOTE: --color-border is intentionally not re-declared here. Our @theme
-     block above defines it as rgb(206 216 233 / 0.55) and we want that to win. */
 }
 
 :root {
   /* shadcn slots, pointing at our locked semantic tokens */
-  --background:           var(--color-bg-app);
+  --background:           var(--color-bg-page);
   --foreground:           var(--color-text-paragraph);
   --card:                 var(--color-bg-surface);
   --card-foreground:      var(--color-text-paragraph);
   --popover:              var(--color-bg-surface);
   --popover-foreground:   var(--color-text-paragraph);
-  --primary:              var(--color-action);
+  --primary:              var(--color-action-primary);
   --primary-foreground:   #ffffff;
-  --secondary:            var(--color-action-2);
+  --secondary:            var(--color-action-secondary);
   --secondary-foreground: #ffffff;
   --muted:                var(--color-bg-highlight);
   --muted-foreground:     var(--color-text-muted);
   --accent:               var(--color-bg-highlight);
   --accent-foreground:    var(--color-text-headline);
-  --destructive:          var(--color-danger);
-  --ring:                 var(--color-action);
-  --input:                var(--color-border);
+  --destructive:          var(--color-status-danger);
+  --ring:                 var(--color-action-primary);
+  --input:                var(--color-border-default);
 
   /* shadcn's --radius (referenced directly by some components) — set to our lg */
   --radius:               0.5rem;
@@ -137,6 +181,6 @@
   }
 
   * {
-    @apply border-border;
+    @apply border-border-default;
   }
 }

@@ -35,7 +35,7 @@ function App() {
             New Sketch
           </Button>
 
-          <div className="flex flex-col gap-2 pt-4 border-t border-border">
+          <div className="flex flex-col gap-2 pt-4 border-t border-border-default">
             <p className="font-mono text-[10px] uppercase tracking-wider text-text-muted">
               Alert tokens
             </p>
