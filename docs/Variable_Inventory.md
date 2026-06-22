@@ -1,6 +1,6 @@
 # Reckon — Variable Inventory
 
-_Last updated: 2026-06-12_
+_Last updated: 2026-06-14_
 
 Companion to CLAUDE.md. Source of truth for the Figma ↔ code naming contract.
 
@@ -29,6 +29,7 @@ Primitives are scope-hidden (`[]`) so they don't appear in fill/stroke pickers �
 | `sanmarino/50` → `sanmarino/950` | Full ramp (11 steps) | Base/secondary; full ramp locked |
 | `sanmarino/600-a90` | `rgba(61, 93, 145, 0.9)` | Alpha-baked for `text/secondary`, `icon/secondary` |
 | `sanmarino/200-a55` | `rgba(206, 216, 233, 0.55)` | Alpha-baked for `border/default` |
+| `mulberry/100-a55` | `rgba(255, 217, 236, 0.55)` | Alpha-baked for `bg/accent-highlight` — adapts via blend on layered surfaces |
 | `info/500` | `#5E78F6` | Anchor only; full ramp deferred |
 | `success/100` | `#E3F5E4` | Soft success surface |
 | `success/200` | `#C9E9CC` | Soft success border |
@@ -56,7 +57,8 @@ Mode set up for forward compatibility with Dark mode (v0.2+); only `Light` is po
 | `bg/hover` | `sanmarino/50` | Default row / button hover |
 | `bg/sunken` | `sanmarino/50` | Icon tile backgrounds, chart-bar tracks (recessed surfaces) |
 | `bg/accent` | `mulberry/50` | Active nav item, selected row |
-| `bg/highlight` | `sanmarino/100` | Subtle emphasis surface |
+| `bg/accent-highlight` | `mulberry/100-a55` | Accent surface for layered contexts (e.g. Decision icon tile when row is hovered) — alpha-baked so it gains saturation against tinted backgrounds |
+| `bg/highlight` | `sanmarino/100` | Subtle emphasis surface (sanmarino-keyed counterpart of `bg/accent-highlight`) |
 | `bg/tooltip` | `sanmarino/950` | Dark tooltip background |
 | `bg/input-addon` | `sanmarino/50` | Input prefixes / affixes |
 | `bg/chart-bar` | `sanmarino/500` | Default chart bar fill |
@@ -147,19 +149,26 @@ Single collection, FLOAT, scope `GAP` (covers itemSpacing + padding). 4px scale 
 | `space-0` | `--spacing-0` | `gap-0`, `p-0` | 0 |
 | `space-0-5` | `--spacing-0-5` | `gap-0.5`, `p-0.5` | 2 |
 | `space-1` | `--spacing-1` | `gap-1`, `p-1` | 4 |
+| `space-1-5` | `--spacing-1-5` | `gap-1.5`, `p-1.5` | 6 |
 | `space-2` | `--spacing-2` | `gap-2`, `p-2` | 8 |
+| `space-2-5` | `--spacing-2-5` | `gap-2.5`, `p-2.5` | 10 |
 | `space-3` | `--spacing-3` | `gap-3`, `p-3` | 12 |
+| `space-3-5` | `--spacing-3-5` | `gap-3.5`, `p-3.5` | 14 |
 | `space-4` | `--spacing-4` | `gap-4`, `p-4` | 16 |
 | `space-5` | `--spacing-5` | `gap-5`, `p-5` | 20 |
 | `space-6` | `--spacing-6` | `gap-6`, `p-6` | 24 |
+| `space-7` | `--spacing-7` | `gap-7`, `p-7` | 28 |
 | `space-8` | `--spacing-8` | `gap-8`, `p-8` | 32 |
+| `space-9` | `--spacing-9` | `gap-9`, `p-9` | 36 |
 | `space-10` | `--spacing-10` | `gap-10`, `p-10` | 40 |
+| `space-11` | `--spacing-11` | `gap-11`, `p-11` | 44 |
 | `space-12` | `--spacing-12` | `gap-12`, `p-12` | 48 |
+| `space-14` | `--spacing-14` | `gap-14`, `p-14` | 56 |
 | `space-16` | `--spacing-16` | `gap-16`, `p-16` | 64 |
 | `space-20` | `--spacing-20` | `gap-20`, `p-20` | 80 |
 | `space-24` | `--spacing-24` | `gap-24`, `p-24` | 96 |
 
-Skip `space-7`, `space-9`, `space-11`, etc. Add only when a real screen calls for them.
+Skip `space-13`, `space-15`, `space-17`, `space-18`, `space-19`, etc. Add only when a real screen calls for them.
 
 ---
 
@@ -226,24 +235,25 @@ Line-height is set inside each Text Style, not at the variable level. Code synta
 | `text-base` | `text-base` | 16 |
 | `text-lg` | `text-lg` | 18 |
 | `text-xl` | `text-xl` | 20 |
+| `text-22` | `text-22` | 22 |
 | `text-2xl` | `text-2xl` | 24 |
 | `text-3xl` | `text-3xl` | 30 |
 | `text-4xl` | `text-4xl` | 36 |
 | `text-5xl` | `text-5xl` | 48 |
 
-`text-4xl` and `text-5xl` aren't used by any active text style but remain defined for future use.
+`text-4xl` and `text-5xl` aren't used by any active text style but remain defined for future use. `text-22` is pixel-named (not t-shirt sized) since 22 falls between the standard `text-xl` (20) and `text-2xl` (24) — pragmatic outlier in the otherwise t-shirt scale.
 
 ### Available font weights (loaded in `index.html`)
 
 | Family | Weights loaded | Used in styles |
 |---|---|---|
 | Domine | 700 (Bold) | Display/H1, Display/H2, Display/Card, Wordmark |
-| Space Grotesk | 300, 400, 500, 600, 700 | Body/*, Caption/*, Heading/Small, Label/Default |
+| Space Grotesk | 300, 400, 500, 600, 700 | Body/*, Caption/*, Heading/*, Label/Default |
 | JetBrains Mono | 400, 500 | Mono/Caption-*, Mono/Body-* |
 
 Note: `index.html` previously loaded Domine 400/500/600 and JetBrains Mono 700 — trimmed after Domine's available styles in Figma were confirmed as Regular/Bold only and `Count` (the only JetBrains Mono Bold style) was removed. Space Grotesk 300 (Light) and 600 (Semi Bold) are currently loaded but unused by any active style; left in for future use.
 
-### Text Styles (16)
+### Text Styles (18)
 
 Each style binds its family and size to the Typography variables. Weight, line-height, text-case, and letter-spacing are baked into the style directly. The Tailwind shorthand goes in the Description field for Dev Mode visibility.
 
@@ -256,19 +266,21 @@ Each style binds its family and size to the Typography variables. Weight, line-h
 | `Display/Card` | 20 / 28 | `font-display text-xl font-bold` |
 | `Wordmark` | 30 / 36 | `font-display text-3xl font-bold` |
 
-**Heading (Space Grotesk):**
+**Heading (Space Grotesk, all Bold):**
+
+| Text Style | Size / LH (px) | Tailwind shorthand |
+|---|---|---|
+| `Heading/Medium` | 22 / 28 | `text-22 font-bold` |
+| `Heading/Small` | 16 / 24 | `text-base font-bold` |
+
+**Body (Space Grotesk, lowercase):**
 
 | Text Style | Style | Size / LH (px) | Tailwind shorthand |
 |---|---|---|---|
-| `Heading/Small` | Bold | 16 / 24 | `text-base font-bold` |
-
-**Body (Space Grotesk 14, lowercase):**
-
-| Text Style | Style | Tailwind shorthand |
-|---|---|---|
-| `Body/Default` | Regular | `text-sm` |
-| `Body/Medium` | Medium | `text-sm font-medium` |
-| `Body/Emphasis` | Bold | `text-sm font-bold` |
+| `Body/Lead` | Regular | 16 / 24 | `text-base` |
+| `Body/Default` | Regular | 14 / 20 | `text-sm` |
+| `Body/Medium` | Medium | 14 / 20 | `text-sm font-medium` |
+| `Body/Emphasis` | Bold | 14 / 20 | `text-sm font-bold` |
 
 **Caption (Space Grotesk 12, lowercase):**
 
@@ -299,7 +311,7 @@ Each style binds its family and size to the Typography variables. Weight, line-h
 
 ## Effect Styles
 
-Authored directly in Figma, not via variables. CSS values to land in `globals.css` during the rename pass.
+Authored directly in Figma, not via variables. CSS values live in `globals.css` (shipped in commit `fb4bf61`).
 
 | Figma effect style | Description (Dev Mode) | CSS to add to `@theme` |
 |---|---|---|
@@ -319,8 +331,7 @@ Authored directly in Figma, not via variables. CSS values to land in `globals.cs
 - **`status/*-on` tokens** for info, pending, warning, danger — the "dark text/icon on the vivid status surface" variant. Need the matching `/900` shades from full ramps which don't exist yet.
 - **Full ramps** for info, pending, warning, danger — only `/500` anchors exist today. Add when first screen needs them.
 - **Contessa primitive** — was a placeholder in the original draft, not created. May be repurposed or removed.
-- **Foundations documentation page** — the 🎨 Foundations page in Figma is still empty. To populate after this inventory rewrite: color swatches per ramp, semantic role examples, spacing bars, radius row, type specimen.
-- **`globals.css` rename pass + `index.html` font-trim commit** — both pending; will land together in their own session so the live preview rebuilds once with consistent state. See `memory/project_reckon_deferred_followups.md`.
+- **Foundations documentation page** — the 🎨 Foundations page in Figma is still empty. To populate when time allows: color swatches per ramp, semantic role examples, spacing bars, radius row, type specimen.
 
 ---
 
