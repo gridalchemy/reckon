@@ -28,7 +28,7 @@ Primitives are scope-hidden (`[]`) so they don't appear in fill/stroke pickers �
 | `mulberry/50` → `mulberry/950` | Full ramp (11 steps) | Brand primary; full ramp locked |
 | `sanmarino/50` → `sanmarino/950` | Full ramp (11 steps) | Base/secondary; full ramp locked |
 | `sanmarino/600-a90` | `rgba(61, 93, 145, 0.9)` | Alpha-baked for `text/secondary`, `icon/secondary` |
-| `sanmarino/200-a55` | `rgba(206, 216, 233, 0.55)` | Alpha-baked for `border/default` |
+| `sanmarino/200-a65` | `rgba(206, 216, 233, 0.65)` | Alpha-baked for `border/default` |
 | `mulberry/100-a55` | `rgba(255, 217, 236, 0.55)` | Alpha-baked for `bg/accent-highlight` — adapts via blend on layered surfaces |
 | `info/500` | `#5E78F6` | Anchor only; full ramp deferred |
 | `success/100` | `#E3F5E4` | Soft success surface |
@@ -36,8 +36,22 @@ Primitives are scope-hidden (`[]`) so they don't appear in fill/stroke pickers �
 | `success/500` | `#4DAA57` | Vivid success |
 | `success/700` | `#2E6734` | Text/icon on soft success |
 | `pending/500` | `#EABB08` | Anchor only |
+| `warning/100` | `#FAE8DA` | Soft warning surface |
+| `warning/200` | `#F4CEB4` | Soft warning border |
 | `warning/500` | `#DD6031` | Anchor only |
-| `danger/500` | `#FF3B2A` | Anchor only |
+| `warning/700` | `#AC3722` | Text/icon on soft warning |
+| `danger/500` | `#FA3D44` | Anchor only — Strawberry Red (true red, replaces earlier orange-red `#FF3B2A`) |
+| `graychateau/50` | `#F9FAFB` | Disabled palette — softest neutral (used by `bg/disabled`) |
+| `graychateau/100` | `#F3F4F6` | Disabled palette |
+| `graychateau/200` | `#E4E7EC` | Disabled palette (used by `border/disabled`) |
+| `graychateau/300` | `#D0D5DC` | Disabled palette |
+| `graychateau/400` | `#97A1AF` | Disabled palette — text/icon on disabled surfaces (used by `text/disabled`, `icon/disabled`) |
+| `graychateau/500` | `#697382` | Disabled palette |
+| `graychateau/600` | `#485666` | Disabled palette |
+| `graychateau/700` | `#344254` | Disabled palette |
+| `graychateau/800` | `#1C2A3A` | Disabled palette |
+| `graychateau/900` | `#0E182A` | Disabled palette |
+| `graychateau/950` | `#010714` | Disabled palette — strongest |
 
 Code syntax: `var(--color-<name>)` — e.g. `var(--color-mulberry-600)`, `var(--color-sanmarino-600-a90)`.
 
@@ -64,6 +78,9 @@ Mode set up for forward compatibility with Dark mode (v0.2+); only `Light` is po
 | `bg/chart-bar` | `sanmarino/500` | Default chart bar fill |
 | `bg/chart-bar-today` | `mulberry/500` | Present-day chart bar fill |
 | `bg/success` | `success/100` | Soft success surface (tags, alerts) |
+| `bg/warning` | `warning/100` | Soft warning surface (badge "warning" state) |
+| `bg/neutral` | `sanmarino/100` | Neutral badge state — same value as `bg/highlight` but distinct role |
+| `bg/disabled` | `graychateau/50` | Disabled surface (buttons, inputs) |
 
 Scope: `FRAME_FILL, SHAPE_FILL`.
 
@@ -71,11 +88,14 @@ Scope: `FRAME_FILL, SHAPE_FILL`.
 
 | Token | Aliases to | Role |
 |---|---|---|
-| `border/default` | `sanmarino/200-a55` | Card outlines |
+| `border/default` | `sanmarino/200-a65` | Card outlines |
 | `border/highlight` | `sanmarino/300` | Emphasized borders |
 | `border/focus` | `mulberry/600` | Focus rings |
 | `border/divider` | `sanmarino/100` | Dividers, separators |
 | `border/success` | `success/200` | Border on soft success surface |
+| `border/warning` | `warning/200` | Border on soft warning surface |
+| `border/neutral` | `sanmarino/200` | Border on neutral badge — opaque counterpart to `border/default` (which is `sanmarino/200-a65`) |
+| `border/disabled` | `graychateau/200` | Border on disabled surfaces |
 
 Scope: `STROKE_COLOR`.
 
@@ -86,13 +106,17 @@ Scope: `STROKE_COLOR`.
 | `text/headline` | `sanmarino/950` | H1, H2, wordmark |
 | `text/paragraph` | `sanmarino/800` | Body copy |
 | `text/secondary` | `sanmarino/600-a90` | Meta, supporting labels (alpha baked) |
+| `text/secondary-solid` | `sanmarino/600` | Opaque (100%) sibling of `text/secondary` — for use on non-white surfaces where alpha behavior is undesirable |
 | `text/muted` | `sanmarino/300` | Placeholders, captions |
-| `text/disabled` | `sanmarino/300` | Disabled text — **TBD**: will be revised when a real use case lands (opacity-based or new shade) |
+| `text/disabled` | `graychateau/400` | Disabled text |
 | `text/on-action` | `base/white` | Text on vivid mulberry button |
 | `text/on-accent` | `mulberry/700` | Text on soft mulberry surface (active nav) |
 | `text/on-success` | `success/700` | Text on soft success surface (the green tag) |
+| `text/on-warning` | `warning/700` | Text on soft warning surface |
+| `text/on-neutral` | `sanmarino/700` | Text on neutral badge (700 over 600 for accessibility — better contrast on sanmarino/100) |
 | `text/action` | `mulberry/600` | Mulberry-colored body text (links, accents) |
-| `text/strong` | `sanmarino/600` | 100% alpha sibling of `text/secondary` — emphasis below headline weight |
+| `text/action-strong` | `mulberry/700` | Emphasized mulberry text — stronger variant of `text/action`. Same primitive as `text/on-accent` but distinct standalone role |
+| `text/strong` | `sanmarino/700` | Emphasized text — stronger than `text/secondary`, softer than `text/paragraph`. Same primitive as `text/on-neutral` but distinct standalone role |
 
 Scope: `TEXT_FILL`.
 
@@ -107,11 +131,14 @@ Mirrors `text/*` plus mulberry/success additions. Scoped versatile (`FRAME_FILL`
 | `icon/default` | `sanmarino/600` | Default UI icon (nav, list items) |
 | `icon/secondary` | `sanmarino/600-a90` | Softer icons |
 | `icon/muted` | `sanmarino/300` | Low-emphasis / placeholder icons |
-| `icon/disabled` | `sanmarino/300` | Disabled icons — **TBD** alongside `text/disabled` |
+| `icon/disabled` | `graychateau/400` | Disabled icons |
 | `icon/on-action` | `base/white` | Icon on vivid mulberry button |
 | `icon/action` | `mulberry/600` | Mulberry-colored icon (accent, default state) |
 | `icon/on-accent` | `mulberry/700` | Icon on soft mulberry surface (active nav) |
+| `icon/strong` | `sanmarino/700` | Emphasized icon — mirrors `text/strong`. Same primitive as `icon/on-neutral`, distinct standalone role |
 | `icon/on-success` | `success/700` | Icon on soft success surface |
+| `icon/on-warning` | `warning/700` | Icon on soft warning surface |
+| `icon/on-neutral` | `sanmarino/700` | Icon on neutral badge |
 
 #### Action (4)
 
@@ -119,8 +146,8 @@ Mirrors `text/*` plus mulberry/success additions. Scoped versatile (`FRAME_FILL`
 |---|---|---|
 | `action/primary` | `mulberry/600` | Primary CTA |
 | `action/primary-hover` | `mulberry/700` | Primary CTA hover (next ramp step — never opacity) |
-| `action/secondary` | `sanmarino/700` | Secondary CTA |
-| `action/secondary-hover` | `sanmarino/800` | Secondary CTA hover |
+| `action/secondary` | `sanmarino/50` | Secondary CTA — soft sanmarino fill (avoids competing with mulberry primary in hierarchy). Same value as `bg/sunken` but distinct role |
+| `action/secondary-hover` | `sanmarino/100` | Secondary CTA hover (next ramp step, same value as `bg/highlight`) |
 
 Scope: versatile (`FRAME_FILL`, `SHAPE_FILL`, `STROKE_COLOR`, `TEXT_FILL`).
 
@@ -136,7 +163,7 @@ Scope: versatile (`FRAME_FILL`, `SHAPE_FILL`, `STROKE_COLOR`, `TEXT_FILL`).
 
 Scope: `FRAME_FILL`, `SHAPE_FILL`, `TEXT_FILL`.
 
-For soft success surfaces (tag, alert, banner), use the role-family tokens: `bg/success`, `border/success`, `text/on-success`, `icon/on-success`. The vivid `status/*` tokens are for chip/badge/dot use.
+For soft surfaces (tag, alert, banner, Badge component), use the role-family tokens: `bg/<status>`, `border/<status>`, `text/on-<status>`, `icon/on-<status>` — currently `success`, `warning`, and `neutral` follow this pattern. The vivid `status/*` tokens are for chip/badge/dot use. Add the `info`, `pending`, and `danger` soft surfaces when first screen needs them (will need /100, /200, /700 primitives).
 
 ---
 
@@ -327,7 +354,7 @@ Authored directly in Figma, not via variables. CSS values live in `globals.css` 
 
 ## What's deferred
 
-- **Disabled state direction** (`text/disabled`, `icon/disabled`) — both alias `sanmarino/300` for now (same as muted). Will be revised when a real disabled use case appears in a screen, likely via opacity rather than a new shade.
+- **`text/on-action-secondary`** — not yet added. The new soft `action/secondary` (sanmarino/50) needs dark text/icon for contrast — currently use `text/strong` (sanmarino/700) or `text/paragraph` (sanmarino/800) directly in the Button component. Promote to a dedicated semantic token if the binding becomes repetitive.
 - **`status/*-on` tokens** for info, pending, warning, danger — the "dark text/icon on the vivid status surface" variant. Need the matching `/900` shades from full ramps which don't exist yet.
 - **Full ramps** for info, pending, warning, danger — only `/500` anchors exist today. Add when first screen needs them.
 - **Contessa primitive** — was a placeholder in the original draft, not created. May be repurposed or removed.
