@@ -39,8 +39,12 @@ Requires Node.js 22+ (`.nvmrc` pins the version).
 
 ## Status
 
-Active 4-week solo build. Currently in Session 3 of 20 — scaffold, design tokens, and a deployed smoke screen are live. The capture flow, Library, and Reckoning ship in Sessions 6–15. Demo Mode and polish in Week 4.
+Active solo build, paced in sessions rather than calendar weeks. Foundations are complete and frozen: design system in Figma and code (see `docs/Variable_Inventory.md` and `docs/Component_Conventions.md`), deployed smoke screen, hardened npm supply chain. Currently at Session 6 of 20 — capture-flow design. Code sessions 7–11 build the sidebar, routing, IndexedDB storage, and the capture flow; the Reckoning and Demo Mode follow.
 
 ## Context
 
 Reckon is a portfolio piece and a deliberate demonstration of human–AI design collaboration: the product, the process of building it with Claude, and the conventions baked into the codebase are all part of the deliverable.
+
+## Rights
+
+No open-source license is granted. The source is public for reading and portfolio review — © 2026 gridalchemy, all rights reserved. Reuse, redistribution, or derivative works require permission. A formal license decision is parked for the compliance pass.
