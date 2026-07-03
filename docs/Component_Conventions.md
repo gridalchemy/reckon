@@ -167,8 +167,8 @@ The reason is simple: if every interaction combination becomes its own variant, 
 | `Default` | Resting state | Base tokens |
 | `Hover` | Anticipates click | **Next step deeper on the color ramp** (mulberry-600 → mulberry-700). Never opacity-based lightening. |
 | `Focus` | Keyboard focus | `Box Shadow/shadow-focus` applied on top of Default |
+| `Filled` | Has user-entered content (Input) | Distinct from Focus — Focus reads as "cursor here," Filled reads as "content here." Both earn their own variant. |
 | `Selected` | Active route or item | `bg/accent` background, `text/on-accent` text |
-| `Selected/Default` (Input) | Combined "focused or actively typing" | Single visual treatment because the moment is the same |
 | `Disabled` | Unavailable affordance | **Per-component-class** — see "Disabled strategy" below |
 
 ### Border on hover
@@ -239,8 +239,7 @@ Decisions that look inconsistent on inspection but are intentional. Each one ear
 | **ChartBar** | Source Fill is fixed at 72h; per-bar height in WeeklyStrip uses detached copies | Figma's plugin API doesn't allow size overrides on instance children. In React, heights will be driven by data per bar and this constraint disappears. |
 | **WeeklyStrip** | 7 ChartBar instances are detached, not linked | Same Figma constraint as above. The composite is a showcase; the real app drives heights via data. |
 | **NavItem** | No combined `Selected+Hover` variant | Selected wins; no extra hover styling layered on top. Cleaner than a fourth state. |
-| **Tooltip** | `·` separator stays hardcoded; only `dayDate` and `count` are properties | The separator is structural punctuation, not content. A property for it would invite consumers to break the visual rhythm. |
-| **Input** | `State=Focus/Typing` is a combined state | The focused-empty state and active-typing state look identical. Two variants for the same visual is noise. |
+| **Tooltip** | Structural punctuation (`·`) lives in the component, not in props | The dot is a visual rhythm device, not user content. Only content-shaped fields (`dayDate`, `count`) earn property status; separators categorically don't. Useful test for any future component: does this hold *content* the consumer would sensibly change? If no, it stays in the component. |
 | **Button** | Disabled = opacity 75% on the matching Default per Type (not a unified grey disabled) | Preserves Type semantics. Disabled Primary still reads as the main mulberry CTA, just unavailable. Surfaces/inputs will use designated disabled tokens instead — see § States and tokens. |
 | **Button** | Secondary uses a soft (sanmarino-50/100) surface, not the saturated dark sanmarino | A fully saturated Secondary competes with Primary for visual emphasis. The light surface gives Primary the saturated lane and Secondary the soft lane — clearer hierarchy, modern systems convention (shadcn, Linear, Vercel). |
 
