@@ -1,0 +1,442 @@
+<title>Reckon — Live Architecture Map</title>
+<style>
+  :root {
+    --bg: #F4F6FB;
+    --surface: #FFFFFF;
+    --surface-2: #EDF1F8;
+    --ink: #1B2436;
+    --muted: #5B6B85;
+    --faint: #8DA2C0;
+    --line: #D0D5DC;
+    --node-border: #C3CEDE;
+    --accent: #C83B86;
+    --accent-soft: rgba(200, 59, 134, 0.10);
+    --blue: #3D5D91;
+    --blue-soft: rgba(78, 115, 169, 0.12);
+    --built: #4DAA57;
+    --pending: #B8930A;
+    --panel-shadow: 0 8px 28px rgba(27, 36, 54, 0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0E182A;
+      --surface: #17233C;
+      --surface-2: #1D2C4A;
+      --ink: #F3F4F6;
+      --muted: #A2B7D7;
+      --faint: #6E82A5;
+      --line: #2A3A57;
+      --node-border: #33456A;
+      --accent: #E0559D;
+      --accent-soft: rgba(224, 85, 157, 0.14);
+      --blue: #6E92C6;
+      --blue-soft: rgba(110, 146, 198, 0.14);
+      --built: #67C172;
+      --pending: #EABB08;
+      --panel-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E182A; --surface: #17233C; --surface-2: #1D2C4A;
+    --ink: #F3F4F6; --muted: #A2B7D7; --faint: #6E82A5;
+    --line: #2A3A57; --node-border: #33456A;
+    --accent: #E0559D; --accent-soft: rgba(224, 85, 157, 0.14);
+    --blue: #6E92C6; --blue-soft: rgba(110, 146, 198, 0.14);
+    --built: #67C172; --pending: #EABB08;
+    --panel-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  }
+  :root[data-theme="light"] {
+    --bg: #F4F6FB; --surface: #FFFFFF; --surface-2: #EDF1F8;
+    --ink: #1B2436; --muted: #5B6B85; --faint: #8DA2C0;
+    --line: #D0D5DC; --node-border: #C3CEDE;
+    --accent: #C83B86; --accent-soft: rgba(200, 59, 134, 0.10);
+    --blue: #3D5D91; --blue-soft: rgba(78, 115, 169, 0.12);
+    --built: #4DAA57; --pending: #B8930A;
+    --panel-shadow: 0 8px 28px rgba(27, 36, 54, 0.10);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.5;
+    padding: 28px clamp(16px, 3vw, 40px) 64px;
+  }
+  .mono { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
+
+  header h1 {
+    font-family: "Iowan Old Style", "Book Antiqua", Georgia, serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin: 0 0 4px;
+    letter-spacing: 0.01em;
+  }
+  header h1 em { color: var(--accent); font-style: normal; }
+  header p { margin: 0; color: var(--muted); max-width: 62ch; font-size: 0.92rem; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 16px 22px;
+    margin: 18px 0 22px; font-size: 0.75rem; color: var(--muted);
+    align-items: center;
+  }
+  .legend .swatch { display: inline-flex; align-items: center; gap: 7px; }
+  .legend .key-line { width: 26px; height: 0; border-top: 2px solid var(--blue); }
+  .legend .key-line.ai { border-top-color: var(--accent); border-top-style: dashed; }
+  .legend .chip { font-size: 0.62rem; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+  @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+  .map-wrap { position: relative; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); padding: 22px; }
+  .map-inner { position: relative; min-width: 880px; }
+  svg.edges { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  svg.edges path { fill: none; stroke-width: 1.4; opacity: 0.38; transition: opacity 0.18s, stroke-width 0.18s; }
+  svg.edges path.flow { stroke: var(--blue); }
+  svg.edges path.ai { stroke: var(--accent); stroke-dasharray: 5 4; }
+  svg.edges path.hot { opacity: 1; stroke-width: 2.4; }
+  svg.edges.focused path:not(.hot) { opacity: 0.08; }
+
+  .cols { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px; }
+  .col-title {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--faint); margin-bottom: 12px;
+  }
+  .col { display: flex; flex-direction: column; gap: 10px; }
+
+  .node {
+    background: var(--surface);
+    border: 1px solid var(--node-border);
+    border-radius: 9px;
+    padding: 9px 12px 10px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    color: var(--ink);
+    font: inherit;
+    transition: opacity 0.18s, border-color 0.18s, transform 0.12s;
+    position: relative;
+  }
+  .node:hover { transform: translateY(-1px); border-color: var(--blue); }
+  .node:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .node .n-title { font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+  .node .n-sub { font-family: ui-monospace, Consolas, monospace; font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
+  .node.planned { border-style: dashed; background: transparent; }
+  .node.selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .cols.focused .node:not(.selected):not(.linked) { opacity: 0.32; }
+
+  .chip {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.58rem; letter-spacing: 0.08em;
+    padding: 2px 7px; border-radius: 99px; white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .chip.built   { color: var(--built);   border: 1px solid var(--built); }
+  .chip.planned { color: var(--pending); border: 1px solid var(--pending); }
+  .chip.partial { color: var(--blue);    border: 1px solid var(--blue); }
+
+  aside.panel {
+    position: sticky; top: 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: var(--panel-shadow);
+    min-height: 300px;
+  }
+  .panel .p-path { font-family: ui-monospace, Consolas, monospace; font-size: 0.7rem; color: var(--faint); }
+  .panel h2 { margin: 2px 0 10px; font-size: 1.15rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .panel h3 {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--faint); margin: 18px 0 6px;
+  }
+  .panel p { font-size: 0.88rem; margin: 0; color: var(--ink); }
+  .panel .rel { display: flex; flex-direction: column; gap: 5px; }
+  .panel .rel button {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 7px;
+    color: var(--ink); font: inherit; font-size: 0.78rem;
+    padding: 5px 10px; cursor: pointer; text-align: left;
+  }
+  .panel .rel button:hover { border-color: var(--accent); }
+  .panel .rel .edge-note { color: var(--muted); font-size: 0.7rem; font-family: ui-monospace, Consolas, monospace; }
+  .panel .empty { color: var(--faint); font-size: 0.78rem; font-style: italic; }
+
+  section.watch { margin-top: 34px; }
+  section.watch > h2 {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 14px;
+  }
+  .watch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .watch-card {
+    border: 1px solid var(--line); border-left: 3px solid var(--pending);
+    border-radius: 10px; background: var(--surface);
+    padding: 14px 16px; cursor: pointer; text-align: left; font: inherit; color: var(--ink);
+  }
+  .watch-card:hover { border-color: var(--accent); border-left-color: var(--accent); }
+  .watch-card .w-tag {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.6rem; letter-spacing: 0.1em; color: var(--pending); text-transform: uppercase;
+  }
+  .watch-card p { margin: 6px 0 0; font-size: 0.82rem; color: var(--muted); }
+  .watch-card strong { color: var(--ink); }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<h2 class="sr-only">Interactive dependency map of the Reckon codebase: source files, build toolchain, runtime libraries, and cloud services, with clickable nodes explaining each part in plain English.</h2>
+
+<header>
+  <h1>Reckon <em>·</em> Live Architecture Map</h1>
+  <p>Every box is a real file, tool, or service in the project. Click one to see what it does, what feeds it, and what it feeds — in plain English. Dashed boxes aren't built yet; the map grows as Reckon does.</p>
+</header>
+
+<div class="legend">
+  <span class="swatch"><span class="key-line"></span> build &amp; render flow</span>
+  <span class="swatch"><span class="key-line ai"></span> AI round-trip (Reckoning, planned)</span>
+  <span class="swatch"><span class="chip built">BUILT</span> live in the repo</span>
+  <span class="swatch"><span class="chip partial">INSTALLED</span> in package.json, not wired yet</span>
+  <span class="swatch"><span class="chip planned">PLANNED</span> designed, not started</span>
+</div>
+
+<div class="layout">
+  <div class="map-wrap">
+    <div class="map-inner">
+      <svg class="edges" id="edgeSvg" aria-hidden="true"></svg>
+      <div class="cols" id="cols"></div>
+    </div>
+  </div>
+  <aside class="panel" id="panel" aria-live="polite"></aside>
+</div>
+
+<section class="watch">
+  <h2>Watchpoints — known, deliberate, or waiting</h2>
+  <div class="watch-grid" id="watch"></div>
+</section>
+
+<script>
+const NODES = [
+  // ---- Column 0: You author ----
+  { id:"html",   col:0, title:"index.html",       sub:"page shell · #root · font links", status:"built",
+    plain:"The single HTML page the whole app lives in. It mounts the empty #root div that React fills, and carries the <link> tags that fetch Domine, Space Grotesk and JetBrains Mono from Google Fonts." },
+  { id:"main",   col:0, title:"src/main.tsx",     sub:"boots React into #root", status:"built",
+    plain:"The ignition switch. Four lines that import globals.css, create a React root inside #root, and render <App /> in StrictMode. Everything else in the app descends from this file." },
+  { id:"app",    col:0, title:"src/App.tsx",      sub:"smoke screen (today)", status:"built",
+    plain:"Currently the token smoke screen — wordmark, today's date via date-fns, the New Sketch button, alert-token swatches. It exists to prove the whole pipeline works end to end. It will be replaced by real routing in Session 7." },
+  { id:"ui",     col:0, title:"components/ui/",   sub:"button · card · input — owned shadcn", status:"built",
+    plain:"The three shadcn components copied into the repo. You own these files: the AA hover fix (darker ramp step instead of opacity) lives here, permanently. New components arrive via npx shadcn add, then get the same accessibility pass." },
+  { id:"css",    col:0, title:"styles/globals.css", sub:"@theme design tokens", status:"built",
+    plain:"The single source of truth for color, type and radius — the code mirror of docs/Variable_Inventory.md. Tailwind v4 reads the @theme block directly and turns every token into a utility class. Change a hex here, the whole app changes." },
+  { id:"utils",  col:0, title:"lib/utils.ts",     sub:"cn() class merger", status:"built",
+    plain:"One tiny helper: cn(), which combines clsx and tailwind-merge so conditional Tailwind classes don't conflict. Every shadcn component imports it." },
+  { id:"feat",   col:0, title:"src/ features",    sub:"Home · Library · Reckoning", status:"planned",
+    plain:"The actual product screens — capture flow, Library, the Reckoning trigger, Demo Mode. These are the four never-cut pillars. They'll consume react-router for navigation, idb for storage, Fuse.js for search, and call the Worker for AI." },
+  { id:"wsrc",   col:0, title:"worker/",          sub:"proxy source (Session 11)", status:"planned",
+    plain:"The source code of the Cloudflare Worker. Lands in Session 11 in mock mode (canned JSON), flips to live Anthropic calls once billing is set up. Security requirements are pinned in the compliance notes before any code is written." },
+
+  // ---- Column 1: Toolchain ----
+  { id:"vite",   col:1, title:"Vite 8",           sub:"dev server + bundler", status:"built",
+    plain:"The engine room. In dev it serves files instantly with hot reload at localhost:5173; for production it bundles everything into a static /dist folder. It also resolves the @/ alias and hosts the Tailwind plugin." },
+  { id:"tsc",    col:1, title:"TypeScript 6",     sub:"type checks · tsc -b", status:"built",
+    plain:"The proofreader. Vite transpiles TypeScript but doesn't check it — tsc -b runs first in npm run build and fails the build on any type error. This is what makes refactors safe: rename a type and every stale usage lights up." },
+  { id:"tw",     col:1, title:"Tailwind v4",      sub:"@theme → utility classes", status:"built",
+    plain:"Reads the @theme block in globals.css and generates every utility class the app uses (bg-action-primary, text-headline…). CSS-first config: there is no tailwind.config.js. The @tailwindcss/vite plugin wires it into the build." },
+  { id:"eslint", col:1, title:"ESLint 10",        sub:"lint gate · npm run lint", status:"built",
+    plain:"Style and correctness linter over src/, including the react-hooks rules that catch subtle bugs like missing effect dependencies. Run manually via npm run lint." },
+
+  // ---- Column 2: Runtime ----
+  { id:"react",  col:2, title:"React 19",         sub:"component & state model", status:"built",
+    plain:"Turns the .tsx files into a live, stateful interface in the browser. Components re-render when state changes; React diffs and patches the DOM. Everything visible in Reckon is a React component." },
+  { id:"router", col:2, title:"react-router 7",   sub:"navigation between screens", status:"partial",
+    plain:"Installed but not yet imported anywhere — wiring is the heart of Session 7 (sidebar + routing). It will map URLs like /library and /reckoning to feature screens without page reloads." },
+  { id:"baseui", col:2, title:"Base UI",          sub:"a11y primitives under shadcn", status:"built",
+    plain:"The headless accessibility layer beneath the owned shadcn components (base-nova style uses Base UI, not Radix). Keyboard navigation, focus management, ARIA wiring — the invisible correctness you get for free." },
+  { id:"cva",    col:2, title:"cva · clsx · tw-merge", sub:"variant plumbing", status:"built",
+    plain:"The small utilities that let one Button component express size and variant combinations cleanly. cva declares the variant matrix; clsx + tailwind-merge (via cn()) resolve conflicting classes." },
+  { id:"lucide", col:2, title:"Lucide",           sub:"icon set", status:"built",
+    plain:"Tree-shakeable SVG icons as React components — only the icons actually imported (like Plus on the New Sketch button) end up in the bundle." },
+  { id:"datefns",col:2, title:"date-fns",         sub:"date formatting", status:"built",
+    plain:"All date formatting, by convention. Already live on the smoke screen ('Tuesday, July 7, 2026'). Will format entry timestamps and Reckoning ranges." },
+  { id:"idb",    col:2, title:"idb",              sub:"IndexedDB wrapper", status:"partial",
+    plain:"Installed but not wired yet. A thin promise-based wrapper over the browser's IndexedDB — this is where every Sketch and Decision will be stored. No server, no account: data lives on the user's own machine." },
+  { id:"fuse",   col:2, title:"Fuse.js",          sub:"fuzzy search", status:"partial",
+    plain:"Installed but not wired yet. Will power Library search — typo-tolerant matching over entry titles and content, running entirely in the browser. Last item on the cut order if Week 3 slips." },
+
+  // ---- Column 3: Cloud & storage ----
+  { id:"github", col:3, title:"GitHub · main",    sub:"gridalchemy/reckon", status:"built",
+    plain:"The remote source of truth. Every commit of every file in column one lands here. There is deliberately just one branch — feature branches get used only for risky work, and Cloudflare gives each one its own preview URL automatically." },
+  { id:"pages",  col:3, title:"Cloudflare Pages", sub:"reckon-a5q.pages.dev", status:"built",
+    plain:"Watches the main branch. On every push it runs npm run build on Cloudflare's servers and publishes /dist to the edge. Push equals deploy — there is no manual step." },
+  { id:"worker", col:3, title:"Cloudflare Worker", sub:"Anthropic proxy", status:"planned",
+    plain:"A separate tiny server whose only job is to hold the Anthropic API key and forward Reckoning requests. The key never ships to the browser — this is the seam that lets a static site use a paid API safely." },
+  { id:"anthropic", col:3, title:"Anthropic API", sub:"generates the Reckoning", status:"planned",
+    plain:"Claude reads the logged decisions and writes the Reckoning — observational prose, never questions. Manual trigger only in v0.1: the user presses the button, nothing runs in the background." },
+  { id:"fonts",  col:3, title:"Google Fonts CDN", sub:"Domine · Space Grotesk · JetBrains Mono", status:"built",
+    plain:"Serves the three typefaces via <link> tags in index.html. A known GDPR watchpoint: self-hosting is the planned end state once typography locks, before public launch." },
+  { id:"storage",col:3, title:"IndexedDB",        sub:"in the user's browser", status:"planned",
+    plain:"The browser's built-in database, one instance per visitor. Sketches and Decisions live here in v0.1 — nothing leaves the user's machine. Cloud sync is a v0.2 candidate, not a promise." },
+];
+
+const EDGES = [
+  ["html","vite","flow","entry point Vite serves"],
+  ["html","fonts","flow","<link> tags fetch fonts"],
+  ["main","vite","flow","bundled by"],
+  ["main","react","flow","createRoot + render"],
+  ["app","vite","flow","bundled by"],
+  ["app","tsc","flow","type-checked by"],
+  ["app","datefns","flow","formats today's date"],
+  ["app","lucide","flow","Plus icon"],
+  ["ui","vite","flow","bundled by"],
+  ["ui","tsc","flow","type-checked by"],
+  ["ui","baseui","flow","built on primitives"],
+  ["ui","cva","flow","variants via cn()"],
+  ["utils","cva","flow","wraps clsx + tw-merge"],
+  ["css","tw","flow","@theme read directly"],
+  ["tw","vite","flow","runs as Vite plugin"],
+  ["vite","pages","flow","Pages runs the build"],
+  ["github","pages","flow","push triggers deploy"],
+  ["feat","router","flow","screen navigation"],
+  ["feat","idb","flow","save & load entries"],
+  ["feat","fuse","flow","Library search"],
+  ["idb","storage","flow","reads / writes"],
+  ["feat","worker","ai","'Reckon with this week'"],
+  ["wsrc","worker","ai","deployed as"],
+  ["worker","anthropic","ai","proxied API call"],
+];
+
+const COLS = ["You author · repo files", "Toolchain · build time", "Runtime · in the browser", "Cloud & storage"];
+const CHIP = { built:["built","BUILT"], partial:["partial","INSTALLED"], planned:["planned","PLANNED"] };
+
+const WATCH = [
+  { tag:"GDPR · pre-launch", ref:"fonts",
+    html:"<strong>Google Fonts loads from a CDN.</strong> Under GDPR this transmits visitor IPs to Google. Self-hosting is the locked plan once typography is final — tracked in the compliance notes." },
+  { tag:"wiring pending · session 7+", ref:"router",
+    html:"<strong>Three libraries are installed but unused:</strong> react-router-dom, idb and Fuse.js sit in package.json with zero imports. Not a bug — they're staged for the sessions that wire them." },
+  { tag:"recurring task", ref:"ui",
+    html:"<strong>Every new shadcn component needs the AA pass.</strong> Defaults ship opacity-based hovers (hover:bg-primary/80) that fail the contrast floor. Swap to the darker ramp step on install, every time." },
+  { tag:"deliberate", ref:"github",
+    html:"<strong>npm install scripts are disabled.</strong> .npmrc pins ignore-scripts=true so packages can't run arbitrary code at install time — a supply-chain safety choice, kept on purpose." },
+];
+
+const colsEl = document.getElementById("cols");
+const svg = document.getElementById("edgeSvg");
+const panel = document.getElementById("panel");
+const byId = {};
+let selected = null;
+
+COLS.forEach((label, i) => {
+  const col = document.createElement("div");
+  col.className = "col";
+  col.innerHTML = `<div class="col-title">${label}</div>`;
+  NODES.filter(n => n.col === i).forEach(n => {
+    const b = document.createElement("button");
+    b.className = "node" + (n.status === "planned" ? " planned" : "");
+    b.dataset.id = n.id;
+    const [cls, txt] = CHIP[n.status];
+    b.innerHTML = `<span class="n-title">${n.title}<span class="chip ${cls}">${txt}</span></span><span class="n-sub">${n.sub}</span>`;
+    b.addEventListener("click", () => select(n.id));
+    b.addEventListener("mouseenter", () => { if (!selected) highlight(n.id); });
+    b.addEventListener("mouseleave", () => { if (!selected) highlight(null); });
+    col.appendChild(b);
+    byId[n.id] = { node: n, el: b };
+  });
+  colsEl.appendChild(col);
+});
+
+const paths = EDGES.map(([from, to, kind]) => {
+  const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  p.setAttribute("class", kind);
+  p.dataset.from = from; p.dataset.to = to;
+  svg.appendChild(p);
+  return p;
+});
+
+function drawEdges() {
+  const base = svg.getBoundingClientRect();
+  paths.forEach(p => {
+    const a = byId[p.dataset.from].el.getBoundingClientRect();
+    const b = byId[p.dataset.to].el.getBoundingClientRect();
+    const x1 = a.right - base.left, y1 = a.top + a.height / 2 - base.top;
+    const x2 = b.left - base.left,  y2 = b.top + b.height / 2 - base.top;
+    const dx = Math.max(30, (x2 - x1) / 2);
+    p.setAttribute("d", `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
+  });
+}
+
+function highlight(id) {
+  svg.classList.toggle("focused", !!id);
+  colsEl.classList.toggle("focused", !!id);
+  const linked = new Set();
+  paths.forEach(p => {
+    const hot = id && (p.dataset.from === id || p.dataset.to === id);
+    p.classList.toggle("hot", hot);
+    if (hot) { linked.add(p.dataset.from); linked.add(p.dataset.to); }
+  });
+  Object.values(byId).forEach(({ el }) => {
+    el.classList.toggle("linked", linked.has(el.dataset.id));
+    el.classList.toggle("selected", el.dataset.id === id);
+  });
+}
+
+function relList(items) {
+  if (!items.length) return `<p class="empty">nothing yet — end of the line</p>`;
+  return `<div class="rel">` + items.map(([id, note]) => {
+    const n = byId[id].node;
+    return `<button data-go="${id}">${n.title} <span class="edge-note">· ${note}</span></button>`;
+  }).join("") + `</div>`;
+}
+
+function select(id) {
+  selected = id;
+  highlight(id);
+  const n = byId[id].node;
+  const fedBy  = EDGES.filter(e => e[1] === id).map(e => [e[0], e[3]]);
+  const feeds  = EDGES.filter(e => e[0] === id).map(e => [e[1], e[3]]);
+  const [cls, txt] = CHIP[n.status];
+  panel.innerHTML = `
+    <div class="p-path mono">${COLS[n.col]}</div>
+    <h2>${n.title} <span class="chip ${cls}">${txt}</span></h2>
+    <h3>In plain English</h3>
+    <p>${n.plain}</p>
+    <h3>Fed by</h3>${relList(fedBy)}
+    <h3>Feeds into</h3>${relList(feeds)}
+  `;
+  panel.querySelectorAll("[data-go]").forEach(b =>
+    b.addEventListener("click", () => select(b.dataset.go)));
+}
+
+function intro() {
+  selected = null;
+  highlight(null);
+  panel.innerHTML = `
+    <div class="p-path mono">how to read this</div>
+    <h2>Click any node</h2>
+    <h3>In plain English</h3>
+    <p>Left to right is the journey of the code: files you write, tools that transform them, libraries that run them, services that host them. Blue lines are the everyday build-and-render flow; dashed mulberry lines are the future AI round-trip that powers the Reckoning.</p>
+    <h3>Where Reckon is today</h3>
+    <p>The pipeline is fully proven end to end — smoke screen live at reckon-a5q.pages.dev. Solid boxes exist; dashed ones are designed and waiting for their session.</p>
+  `;
+}
+
+const watchEl = document.getElementById("watch");
+WATCH.forEach(w => {
+  const card = document.createElement("button");
+  card.className = "watch-card";
+  card.innerHTML = `<span class="w-tag">${w.tag}</span><p>${w.html}</p>`;
+  card.addEventListener("click", () => {
+    select(w.ref);
+    byId[w.ref].el.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  watchEl.appendChild(card);
+});
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") intro(); });
+window.addEventListener("resize", drawEdges);
+new ResizeObserver(drawEdges).observe(colsEl);
+
+intro();
+drawEdges();
+</script>
