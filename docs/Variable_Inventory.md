@@ -8,6 +8,8 @@ Companion to CLAUDE.md. Source of truth for the Figma ↔ code naming contract.
 
 Same string in three places. A Figma variable named `bg/page` becomes `--color-bg-page` in `globals.css` and `bg-bg-page` as a Tailwind utility. Pick the role name once in Figma, everything downstream follows.
 
+**Code syntax:** every Figma variable also carries a WEB code syntax of `var(--color-<name>)` (slashes → dashes) so Dev Mode surfaces the CSS reference. This is **not** auto-persisted — Figma only *suggests* it; it must be set explicitly when the variable is created (the plugin API leaves `codeSyntax` empty otherwise).
+
 When handing a screen to Claude Code, list the variables it uses (see Handoff template at the bottom). Claude Code writes the CSS and the JSX. The inventory below tells it what each name means.
 
 **Naming heads-up:** Figma allows commas in variable names (e.g. `stroke-1,25`), but CSS only accepts dots or dashes. All variable names in this inventory use dashes from the start. Stroke fractionals are `stroke-1-25` (dash) — no rename needed before handoff.
@@ -200,6 +202,17 @@ Scope: versatile (`FRAME_FILL`, `SHAPE_FILL`, `STROKE_COLOR`, `TEXT_FILL`).
 Scope: `FRAME_FILL`, `SHAPE_FILL`, `TEXT_FILL`.
 
 For soft surfaces (tag, alert, banner, Badge component), use the role-family tokens: `bg/<status>`, `border/<status>`, `text/on-<status>`, `icon/on-<status>` — currently `success`, `warning`, `neutral`, and `danger` follow this pattern. The vivid `status/*` tokens are for chip/badge/dot use. Add the `info` and `pending` soft surfaces when first screen needs them (will need /100, /200, /700 primitives).
+
+### Danger vs destructive
+
+Two red-keyed vocabularies that read like synonyms but split cleanly by **outcome**, not appearance:
+
+- **`danger/*`** — non-interactive *status / feedback*: error text, soft alert surfaces, badges, borders on those surfaces. A member of the status family above (`bg/success`, `bg/warning`, `bg/danger`), sharing its grammar. Also owns the shared red text color (`text/danger`, `icon/danger`), which a *ghost* destructive control borrows for its resting label — exactly as a ghost mulberry button borrows `text/action`.
+- **`destructive/*`** — the interactive *control that destroys something*, in **every** variant (solid fill + hover, ghost hover surfaces, white foregrounds on the solid fill). An action variant, sibling to `action/primary` / `action/secondary` — what shadcn calls `variant="destructive"`.
+
+The line is *outcome*, not visual weight: a ghost delete is as destructive as a solid one, so both live under `destructive/*`. What forced two words: `text/on-danger` was already the dark-text-on-soft-surface role (parallel to `text/on-success`), so white-text-on-the-solid-button needed its own name — `text/on-destructive` — mirroring how mulberry splits `text/on-accent` (soft surface) from `text/on-action` (vivid button).
+
+Current working rule — to be validated once destructive components are built, not treated as locked. Component-level usage (which Button Type binds which token, etc.) lands in `Component_Conventions.md` when those components exist.
 
 ---
 

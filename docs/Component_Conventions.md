@@ -1,6 +1,6 @@
 # Reckon — Component Conventions
 
-_Last updated: 2026-06-28_
+_Last updated: 2026-07-29_
 
 How components are named, shaped, and described in Figma — so that v0.1 and everything after stay consistent. Companion to `CLAUDE.md` (product / voice rules) and `Variable_Inventory.md` (the token contract).
 
@@ -242,6 +242,7 @@ Decisions that look inconsistent on inspection but are intentional. Each one ear
 | **Tooltip** | Structural punctuation (`·`) lives in the component, not in props | The dot is a visual rhythm device, not user content. Only content-shaped fields (`dayDate`, `count`) earn property status; separators categorically don't. Useful test for any future component: does this hold *content* the consumer would sensibly change? If no, it stays in the component. |
 | **Button** | Disabled = opacity 75% on the matching Default per Type (not a unified grey disabled) | Preserves Type semantics. Disabled Primary still reads as the main mulberry CTA, just unavailable. Surfaces/inputs will use designated disabled tokens instead — see § States and tokens. |
 | **Button** | Secondary uses a soft (sanmarino-50/100) surface, not the saturated dark sanmarino | A fully saturated Secondary competes with Primary for visual emphasis. The light surface gives Primary the saturated lane and Secondary the soft lane — clearer hierarchy, modern systems convention (shadcn, Linear, Vercel). |
+| **WaxSeal** *(logged ahead of build)* | The "R" monogram uses Domine 18/16 — line-height smaller than font-size — instead of a shared text style | A one-off geometric hack to visually center a single-glyph monogram in the 44px sealed disc. Encoding it as a text style would pollute the ramp. Handled inline in the component with a comment noting why. |
 
 ---
 
