@@ -55,7 +55,11 @@
   --color-warning-200: #F4CEB4;
   --color-warning-500: #DD6031;
   --color-warning-700: #AC3722;
+  --color-danger-100:  #FFE0E1;
+  --color-danger-200:  #FFC7C9;
   --color-danger-500:  #FA3D44;
+  --color-danger-700:  #C31219;
+  --color-danger-800:  #A11318;
 
   /* SEMANTIC — Backgrounds */
   --color-bg-page:            #F4F6FB;
@@ -73,7 +77,24 @@
   --color-bg-success:          #E3F5E4;
   --color-bg-warning:          #FAE8DA;
   --color-bg-neutral:          #E9EDF5;
+  --color-bg-danger:           rgb(255 224 225 / 0.80);
   --color-bg-disabled:         #F9FAFB;
+
+  /* Inverse / dark surfaces (chip active, dark badge, modal scrim) */
+  --color-bg-inverse:          #1B2436;
+  --color-bg-badge-inverse:    #2C3F60;
+  --color-bg-backdrop:         rgb(27 36 54 / 0.42);
+
+  /* Section-subtle tint (decision card footer + hover) */
+  --color-bg-section-subtle:       rgb(162 183 215 / 0.20);
+  --color-bg-section-subtle-hover: rgb(162 183 215 / 0.28);
+
+  /* Destructive interactive (ghost button hover, on white vs colored surface) */
+  --color-bg-destructive-ghost:        rgb(255 224 225 / 0.80);
+  --color-bg-destructive-ghost-strong: rgb(255 199 201 / 0.82);
+
+  /* Wax Seal (ceremonial component — exposes mulberry/800) */
+  --color-bg-wax:              #91155C;
 
   /* SEMANTIC — Borders */
   --color-border-default:   rgb(206 216 233 / 0.55);
@@ -83,7 +104,11 @@
   --color-border-success:   #C9E9CC;
   --color-border-warning:   #F4CEB4;
   --color-border-neutral:   #CED8E9;
+  --color-border-danger:    #FFC7C9;
   --color-border-disabled:  #E4E7EC;
+  --color-border-badge-inverse:      #1B2436;
+  --color-border-wax:                rgb(82 15 51 / 0.50);
+  --color-border-on-primary-subtle:  rgb(255 255 255 / 0.45);
 
   /* SEMANTIC — Text */
   --color-text-headline:        #1B2436;
@@ -100,6 +125,11 @@
   --color-text-on-success:      #2E6734;
   --color-text-on-warning:      #AC3722;
   --color-text-on-neutral:      #314973;
+  --color-text-on-badge-inverse: #FFFFFF;
+  --color-text-danger:          #C31219;
+  --color-text-on-danger:       #A11318;
+  --color-text-on-destructive:  #FFFFFF;
+  --color-text-on-primary-subtle: rgb(255 255 255 / 0.80);
 
   /* SEMANTIC — Icons */
   --color-icon-headline:   #1B2436;
@@ -115,14 +145,20 @@
   --color-icon-on-success: #2E6734;
   --color-icon-on-warning: #AC3722;
   --color-icon-on-neutral: #314973;
+  --color-icon-action-strong: #AE2571;
+  --color-icon-danger:     #C31219;
+  --color-icon-on-danger:  #A11318;
+  --color-icon-on-destructive: #FFFFFF;
 
   /* SEMANTIC — Actions
      Secondary is the soft sanmarino surface (50 → 100 on hover) — the
      saturated dark sanmarino competed with Primary for hierarchy. */
-  --color-action-primary:         #C83B86;
-  --color-action-primary-hover:   #AE2571;
-  --color-action-secondary:       #F4F6FB;
-  --color-action-secondary-hover: #E9EDF5;
+  --color-action-primary:           #C83B86;
+  --color-action-primary-hover:     #AE2571;
+  --color-action-secondary:         #F4F6FB;
+  --color-action-secondary-hover:   #E9EDF5;
+  --color-action-destructive:       #C31219;
+  --color-action-destructive-hover: #A11318;
 
   /* SEMANTIC — Status (vivid; soft surfaces use bg/success + friends) */
   --color-status-info:    #5E78F6;
@@ -180,6 +216,7 @@
   --shadow-lg:    0 10px 15px -3px rgb(0 0 0 / 0.10), 0 4px 6px -4px rgb(0 0 0 / 0.10);
   --shadow-xl:    0 20px 25px -5px rgb(0 0 0 / 0.10), 0 8px 10px -6px rgb(0 0 0 / 0.10);
   --shadow-2xl:   0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-3xl:   -20px 0 60px -20px rgb(0 0 0 / 0.35);
   --shadow-focus: 0 0 0 3px rgb(200 59 134 / 0.30);
 }
 

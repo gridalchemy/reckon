@@ -1,6 +1,6 @@
 # Reckon — Variable Inventory
 
-_Last updated: 2026-06-14_
+_Last updated: 2026-07-29_
 
 Companion to CLAUDE.md. Source of truth for the Figma ↔ code naming contract.
 
@@ -18,18 +18,24 @@ When handing a screen to Claude Code, list the variables it uses (see Handoff te
 
 Two tiers. Primitives are hidden raw ramps; semantic tokens are role-named aliases.
 
-### Primitives (33 vars, hidden from picker)
+### Primitives (hidden from picker)
 
 Primitives are scope-hidden (`[]`) so they don't appear in fill/stroke pickers — they're consumed only via semantic aliases.
 
 | Family | Range | Notes |
 |---|---|---|
-| `base/white` | `#FFFFFF` | Used by `bg/surface`, `bg/sidebar`, `text/on-action`, `icon/on-action` |
+| `base/white` | `#FFFFFF` | Used by `bg/surface`, `bg/sidebar`, `text/on-action`, `icon/on-action`, `text/on-badge-inverse`, `text/on-destructive`, `icon/on-destructive` |
+| `base/white-a80` | `rgba(255, 255, 255, 0.80)` | Alpha-baked for `text/on-primary-subtle` (HOLD label on primary surface) |
+| `base/white-a45` | `rgba(255, 255, 255, 0.45)` | Alpha-baked for `border/on-primary-subtle` (HOLD outline on primary surface) |
 | `mulberry/50` → `mulberry/950` | Full ramp (11 steps) | Brand primary; full ramp locked |
+| `mulberry/100-a55` | `rgba(255, 217, 236, 0.55)` | Alpha-baked for `bg/accent-highlight` — adapts via blend on layered surfaces |
+| `mulberry/950-a50` | `rgba(82, 15, 51, 0.50)` | Alpha-baked for `border/wax` (matte dot rim + sealed border) |
 | `sanmarino/50` → `sanmarino/950` | Full ramp (11 steps) | Base/secondary; full ramp locked |
 | `sanmarino/600-a90` | `rgba(61, 93, 145, 0.9)` | Alpha-baked for `text/secondary`, `icon/secondary` |
+| `sanmarino/300-a20` | `rgba(162, 183, 215, 0.20)` | Alpha-baked for `bg/section-subtle` (decision card footer tint) |
+| `sanmarino/300-a28` | `rgba(162, 183, 215, 0.28)` | Alpha-baked for `bg/section-subtle-hover` |
 | `sanmarino/200-a65` | `rgba(206, 216, 233, 0.65)` | Alpha-baked for `border/default` |
-| `mulberry/100-a55` | `rgba(255, 217, 236, 0.55)` | Alpha-baked for `bg/accent-highlight` — adapts via blend on layered surfaces |
+| `sanmarino/950-a42` | `rgba(27, 36, 54, 0.42)` | Alpha-baked for `bg/backdrop` (modal / drawer scrim) |
 | `info/500` | `#5E78F6` | Anchor only; full ramp deferred |
 | `success/100` | `#E3F5E4` | Soft success surface |
 | `success/200` | `#C9E9CC` | Soft success border |
@@ -40,7 +46,13 @@ Primitives are scope-hidden (`[]`) so they don't appear in fill/stroke pickers �
 | `warning/200` | `#F4CEB4` | Soft warning border |
 | `warning/500` | `#DD6031` | Anchor only |
 | `warning/700` | `#AC3722` | Text/icon on soft warning |
-| `danger/500` | `#FA3D44` | Anchor only — Strawberry Red (true red, replaces earlier orange-red `#FF3B2A`) |
+| `danger/100` | `#FFE0E1` | Soft danger surface |
+| `danger/200` | `#FFC7C9` | Soft danger border |
+| `danger/500` | `#FA3D44` | Vivid danger — Strawberry Red (true red, replaces earlier orange-red `#FF3B2A`) |
+| `danger/700` | `#C31219` | Text/icon color on white surface; primary destructive button fill |
+| `danger/800` | `#A11318` | Text/icon on soft danger surface; primary destructive button hover fill |
+| `danger/100-a80` | `rgba(255, 224, 225, 0.80)` | Alpha-baked for `bg/danger`, `bg/destructive-ghost` |
+| `danger/200-a82` | `rgba(255, 199, 201, 0.82)` | Alpha-baked for `bg/destructive-ghost-strong` |
 | `graychateau/50` | `#F9FAFB` | Disabled palette — softest neutral (used by `bg/disabled`) |
 | `graychateau/100` | `#F3F4F6` | Disabled palette |
 | `graychateau/200` | `#E4E7EC` | Disabled palette (used by `border/disabled`) |
@@ -57,11 +69,11 @@ Code syntax: `var(--color-<name>)` — e.g. `var(--color-mulberry-600)`, `var(--
 
 **Alpha note:** when a token bakes in alpha, set the alpha on a dedicated alpha-baked **primitive**, not on the alias — Figma aliases inherit alpha from the source, they don't layer it.
 
-### Semantic (46 vars, mode: `Light`)
+### Semantic (mode: `Light`)
 
 Mode set up for forward compatibility with Dark mode (v0.2+); only `Light` is populated today.
 
-#### Backgrounds (12)
+#### Backgrounds
 
 | Token | Aliases to | Role |
 |---|---|---|
@@ -80,11 +92,20 @@ Mode set up for forward compatibility with Dark mode (v0.2+); only `Light` is po
 | `bg/success` | `success/100` | Soft success surface (tags, alerts) |
 | `bg/warning` | `warning/100` | Soft warning surface (badge "warning" state) |
 | `bg/neutral` | `sanmarino/100` | Neutral badge state — same value as `bg/highlight` but distinct role |
+| `bg/danger` | `danger/100-a80` | Soft danger surface (cards, alerts, badge "danger" state) — alpha-baked so it works on layered surfaces |
 | `bg/disabled` | `graychateau/50` | Disabled surface (buttons, inputs) |
+| `bg/inverse` | `sanmarino/950` | Deepest dark surface (filter chip active state) |
+| `bg/badge-inverse` | `sanmarino/800` | Dark badge variant fill (one step lighter than `bg/inverse`) |
+| `bg/backdrop` | `sanmarino/950-a42` | Modal / drawer scrim — alpha-baked so it darkens whatever sits behind it |
+| `bg/section-subtle` | `sanmarino/300-a20` | Tinted subsection within a surface (e.g. decision card footer) |
+| `bg/section-subtle-hover` | `sanmarino/300-a28` | Hover on `bg/section-subtle` (e.g. trash icon hover on decision card footer) |
+| `bg/destructive-ghost` | `danger/100-a80` | Ghost destructive button hover on white/normal surface — same value as `bg/danger`, distinct role |
+| `bg/destructive-ghost-strong` | `danger/200-a82` | Ghost destructive button hover on stacked colored surface |
+| `bg/wax` | `mulberry/800` | Wax Seal — matte dot fill, melt state fill, sealed inner disc (exposes `mulberry/800` which is otherwise hidden) |
 
 Scope: `FRAME_FILL, SHAPE_FILL`.
 
-#### Borders (5)
+#### Borders
 
 | Token | Aliases to | Role |
 |---|---|---|
@@ -95,11 +116,15 @@ Scope: `FRAME_FILL, SHAPE_FILL`.
 | `border/success` | `success/200` | Border on soft success surface |
 | `border/warning` | `warning/200` | Border on soft warning surface |
 | `border/neutral` | `sanmarino/200` | Border on neutral badge — opaque counterpart to `border/default` (which is `sanmarino/200-a65`) |
+| `border/danger` | `danger/200` | Border on soft danger surface (soft danger cards, alerts, badge "danger" state) |
 | `border/disabled` | `graychateau/200` | Border on disabled surfaces |
+| `border/badge-inverse` | `sanmarino/950` | Border on `bg/badge-inverse` — same value as `bg/inverse` but distinct role |
+| `border/wax` | `mulberry/950-a50` | Wax Seal — matte dot rim, sealed border |
+| `border/on-primary-subtle` | `base/white-a45` | Translucent white border on primary surface (Wax Seal's HOLD outline; reusable for other outline-on-vivid patterns) |
 
 Scope: `STROKE_COLOR`.
 
-#### Text (10)
+#### Text
 
 | Token | Aliases to | Role |
 |---|---|---|
@@ -114,13 +139,18 @@ Scope: `STROKE_COLOR`.
 | `text/on-success` | `success/700` | Text on soft success surface (the green tag) |
 | `text/on-warning` | `warning/700` | Text on soft warning surface |
 | `text/on-neutral` | `sanmarino/700` | Text on neutral badge (700 over 600 for accessibility — better contrast on sanmarino/100) |
+| `text/on-badge-inverse` | `base/white` | Text on `bg/badge-inverse` (dark badge variant) |
+| `text/danger` | `danger/700` | Destructive-colored text on white/normal surface (mirrors `text/action` for danger) |
+| `text/on-danger` | `danger/800` | Text on soft danger surface (`bg/danger`) — one step deeper for contrast |
+| `text/on-destructive` | `base/white` | Text on primary destructive button (`action/destructive`) |
+| `text/on-primary-subtle` | `base/white-a80` | Translucent white text on primary surface (Wax Seal's HOLD label; reusable for other translucent-on-vivid patterns) |
 | `text/action` | `mulberry/600` | Mulberry-colored body text (links, accents) |
 | `text/action-strong` | `mulberry/700` | Emphasized mulberry text — stronger variant of `text/action`. Same primitive as `text/on-accent` but distinct standalone role |
 | `text/strong` | `sanmarino/700` | Emphasized text — stronger than `text/secondary`, softer than `text/paragraph`. Same primitive as `text/on-neutral` but distinct standalone role |
 
 Scope: `TEXT_FILL`.
 
-#### Icons (10)
+#### Icons
 
 Mirrors `text/*` plus mulberry/success additions. Scoped versatile (`FRAME_FILL`, `SHAPE_FILL`, `STROKE_COLOR`) so it works for both stroke-based Lucide icons and filled glyphs.
 
@@ -134,13 +164,17 @@ Mirrors `text/*` plus mulberry/success additions. Scoped versatile (`FRAME_FILL`
 | `icon/disabled` | `graychateau/400` | Disabled icons |
 | `icon/on-action` | `base/white` | Icon on vivid mulberry button |
 | `icon/action` | `mulberry/600` | Mulberry-colored icon (accent, default state) |
+| `icon/action-strong` | `mulberry/700` | Emphasized mulberry icon — mirrors `text/action-strong`. Same primitive as `icon/on-accent` but distinct standalone role |
 | `icon/on-accent` | `mulberry/700` | Icon on soft mulberry surface (active nav) |
 | `icon/strong` | `sanmarino/700` | Emphasized icon — mirrors `text/strong`. Same primitive as `icon/on-neutral`, distinct standalone role |
 | `icon/on-success` | `success/700` | Icon on soft success surface |
 | `icon/on-warning` | `warning/700` | Icon on soft warning surface |
 | `icon/on-neutral` | `sanmarino/700` | Icon on neutral badge |
+| `icon/danger` | `danger/700` | Destructive-colored icon on white/normal surface (mirrors `icon/action` for danger) |
+| `icon/on-danger` | `danger/800` | Icon on soft danger surface (`bg/danger`) |
+| `icon/on-destructive` | `base/white` | Icon on primary destructive button (`action/destructive`) |
 
-#### Action (4)
+#### Action
 
 | Token | Aliases to | Role |
 |---|---|---|
@@ -148,6 +182,8 @@ Mirrors `text/*` plus mulberry/success additions. Scoped versatile (`FRAME_FILL`
 | `action/primary-hover` | `mulberry/700` | Primary CTA hover (next ramp step — never opacity) |
 | `action/secondary` | `sanmarino/50` | Secondary CTA — soft sanmarino fill (avoids competing with mulberry primary in hierarchy). Same value as `bg/sunken` but distinct role |
 | `action/secondary-hover` | `sanmarino/100` | Secondary CTA hover (next ramp step, same value as `bg/highlight`) |
+| `action/destructive` | `danger/700` | Destructive CTA (delete, remove — irreversible actions) |
+| `action/destructive-hover` | `danger/800` | Destructive CTA hover (next ramp step) |
 
 Scope: versatile (`FRAME_FILL`, `SHAPE_FILL`, `STROKE_COLOR`, `TEXT_FILL`).
 
@@ -163,7 +199,7 @@ Scope: versatile (`FRAME_FILL`, `SHAPE_FILL`, `STROKE_COLOR`, `TEXT_FILL`).
 
 Scope: `FRAME_FILL`, `SHAPE_FILL`, `TEXT_FILL`.
 
-For soft surfaces (tag, alert, banner, Badge component), use the role-family tokens: `bg/<status>`, `border/<status>`, `text/on-<status>`, `icon/on-<status>` — currently `success`, `warning`, and `neutral` follow this pattern. The vivid `status/*` tokens are for chip/badge/dot use. Add the `info`, `pending`, and `danger` soft surfaces when first screen needs them (will need /100, /200, /700 primitives).
+For soft surfaces (tag, alert, banner, Badge component), use the role-family tokens: `bg/<status>`, `border/<status>`, `text/on-<status>`, `icon/on-<status>` — currently `success`, `warning`, `neutral`, and `danger` follow this pattern. The vivid `status/*` tokens are for chip/badge/dot use. Add the `info` and `pending` soft surfaces when first screen needs them (will need /100, /200, /700 primitives).
 
 ---
 
@@ -291,7 +327,10 @@ Each style binds its family and size to the Typography variables. Weight, line-h
 | `Display/H1` | 30 / 36 | `font-display text-3xl font-bold` |
 | `Display/H2` | 24 / 32 | `font-display text-2xl font-bold` |
 | `Display/Card` | 20 / 28 | `font-display text-xl font-bold` |
+| `Display/Small` | 18 / 28 | `font-display text-lg font-bold` |
 | `Wordmark` | 30 / 36 | `font-display text-3xl font-bold` |
+
+**Exception:** the Wax Seal component's "R" monogram uses Domine 18/16 Bold (line-height smaller than font-size) for visual centering inside the 44px sealed disc. This is a one-off geometric hack — not a repeatable typographic style — and is handled inline in the WaxSeal component, not as a shared text style. See `docs/Component_Conventions.md` for the rationale when the component is built.
 
 **Heading (Space Grotesk, all Bold):**
 
@@ -348,6 +387,7 @@ Authored directly in Figma, not via variables. CSS values live in `globals.css` 
 | `shadow-lg` | `shadow-lg` | `0 10px 15px -3px rgb(0 0 0 / 0.10), 0 4px 6px -4px rgb(0 0 0 / 0.10)` |
 | `shadow-xl` | `shadow-xl` | `0 20px 25px -5px rgb(0 0 0 / 0.10), 0 8px 10px -6px rgb(0 0 0 / 0.10)` |
 | `shadow-2xl` | `shadow-2xl` | `0 25px 50px -12px rgb(0 0 0 / 0.25)` |
+| `shadow-3xl` | `shadow-3xl` | `-20px 0 60px -20px rgb(0 0 0 / 0.35)` (lateral shadow for Settings Drawer sliding from right edge) |
 | `focus ring` | `shadow-focus` | `0 0 0 3px rgb(200 59 134 / 0.30)` (mulberry/600 @ 30%, spread 3) |
 
 ---
@@ -355,8 +395,8 @@ Authored directly in Figma, not via variables. CSS values live in `globals.css` 
 ## What's deferred
 
 - **`text/on-action-secondary`** — not yet added. The new soft `action/secondary` (sanmarino/50) needs dark text/icon for contrast — currently use `text/strong` (sanmarino/700) or `text/paragraph` (sanmarino/800) directly in the Button component. Promote to a dedicated semantic token if the binding becomes repetitive.
-- **`status/*-on` tokens** for info, pending, warning, danger — the "dark text/icon on the vivid status surface" variant. Need the matching `/900` shades from full ramps which don't exist yet.
-- **Full ramps** for info, pending, warning, danger — only `/500` anchors exist today. Add when first screen needs them.
+- **`status/*-on` tokens** for info, pending, warning — the "dark text/icon on the vivid status surface" variant. Need the matching `/900` shades from full ramps which don't exist yet. Danger is now covered via `text/on-danger` / `icon/on-danger` at `danger/800`.
+- **Full ramps** for info, pending, warning — only `/500` anchors exist today. Danger has `/100`, `/200`, `/500`, `/700`, `/800` (missing `/50`, `/300`, `/400`, `/600`, `/900`, `/950`). Add when first screen needs them.
 - **Contessa primitive** — was a placeholder in the original draft, not created. May be repurposed or removed.
 - **Foundations documentation page** — the 🎨 Foundations page in Figma is still empty. To populate when time allows: color swatches per ramp, semantic role examples, spacing bars, radius row, type specimen.
 
