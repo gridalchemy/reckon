@@ -319,15 +319,19 @@ Line-height is set inside each Text Style, not at the variable level. Code synta
 
 `text-4xl` and `text-5xl` aren't used by any active text style but remain defined for future use. `text-22` is pixel-named (not t-shirt sized) since 22 falls between the standard `text-xl` (20) and `text-2xl` (24) — pragmatic outlier in the otherwise t-shirt scale.
 
-### Available font weights (loaded in `index.html`)
+### Available font weights (self-hosted from `/public/fonts/`)
+
+Declared via `@font-face` in `src/styles/globals.css`. No runtime requests to `fonts.googleapis.com` or `fonts.gstatic.com` — visitor IPs are not transferred to Google LLC. See `project_reckon_compliance_security` memory for the GDPR rationale.
 
 | Family | Weights loaded | Used in styles |
 |---|---|---|
-| Domine | 700 (Bold) | Display/H1, Display/H2, Display/Card, Wordmark |
+| Domine | 700 (Bold) | Display/H1, Display/H2, Display/Card, Display/Small, Wordmark |
 | Space Grotesk | 300, 400, 500, 600, 700 | Body/*, Caption/*, Heading/*, Label/Default |
 | JetBrains Mono | 400, 500 | Mono/Caption-*, Mono/Body-* |
 
-Note: `index.html` previously loaded Domine 400/500/600 and JetBrains Mono 700 — trimmed after Domine's available styles in Figma were confirmed as Regular/Bold only and `Count` (the only JetBrains Mono Bold style) was removed. Space Grotesk 300 (Light) and 600 (Semi Bold) are currently loaded but unused by any active style; left in for future use.
+Notes:
+- `index.html` previously loaded Domine 400/500/600 and JetBrains Mono 700 — trimmed after Domine's available styles in Figma were confirmed as Regular/Bold only and `Count` (the only JetBrains Mono Bold style) was removed. Space Grotesk 300 (Light) and 600 (Semi Bold) are currently loaded but unused by any active style; left in for future use.
+- Adding or removing a weight is now a two-step manual chore: download the new `.woff2` from google-webfonts-helper into `public/fonts/`, then add its `@font-face` block in `globals.css`. Keep this table and the `@font-face` block in sync — they are the same contract, split across two files.
 
 ### Text Styles (18)
 

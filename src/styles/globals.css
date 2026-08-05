@@ -1,6 +1,71 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* ─── Self-hosted fonts ──────────────────────────────────────────────────
+   Served from /public/fonts/ (no runtime requests to fonts.googleapis.com
+   or fonts.gstatic.com, so no visitor IP is transferred to Google LLC).
+   Weights loaded here must stay in sync with docs/Variable_Inventory.md
+   § Typography → "Available font weights". */
+
+@font-face {
+  font-family: "Domine";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/domine-v25-latin-700.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-v22-latin-300.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-v22-latin-regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-v22-latin-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-v22-latin-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-v22-latin-700.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-v24-latin-regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-v24-latin-500.woff2") format("woff2");
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {

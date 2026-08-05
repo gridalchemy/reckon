@@ -55,7 +55,7 @@ All colors, type, and radii live as CSS variables under `@theme` in `src/styles/
 - **Space Grotesk** for body and UI (weights 300, 400, 500, 600, 700 loaded)
 - **JetBrains Mono** for labels, timestamps, counts (weights 400, 500 loaded)
 
-Loaded from Google Fonts via `<link>` tags in `index.html` with `display=swap`. Self-hosting is the planned end state (GDPR) once typography is locked — see the compliance notes before public launch.
+**Self-hosted** from `public/fonts/` via `@font-face` in `src/styles/globals.css` (all faces use `font-display: swap`). No requests to `fonts.googleapis.com` or `fonts.gstatic.com` at runtime — GDPR-clean, no visitor IP transfer to Google. Adding a new weight is a manual chore: download the `.woff2` from google-webfonts-helper, drop it in `public/fonts/`, add a matching `@font-face` block in `globals.css`, and update the "Available font weights" table in `docs/Variable_Inventory.md` in the same session.
 
 The full type scale is locked in Figma: 18 text styles (Display, Heading, Body, Caption, Label, Mono families) documented with their Tailwind shorthands in `docs/Variable_Inventory.md` § Typography. Use those shorthands verbatim when implementing screens.
 
