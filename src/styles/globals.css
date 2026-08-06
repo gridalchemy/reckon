@@ -109,7 +109,7 @@
   --color-graychateau-950: #010714;
 
   /* ALERT FAMILIES (partial ramps — add remaining steps when a screen needs
-     them. Contessa stays a reserved placeholder, not created.) */
+     them.) */
   --color-info-500:    #5E78F6;
   --color-success-100: #E3F5E4;
   --color-success-200: #C9E9CC;
@@ -195,6 +195,7 @@
   --color-text-on-danger:       #A11318;
   --color-text-on-destructive:  #FFFFFF;
   --color-text-on-primary-subtle: rgb(255 255 255 / 0.80);
+  --color-text-on-action-secondary: #314973;
 
   /* SEMANTIC — Icons */
   --color-icon-headline:   #1B2436;
@@ -214,6 +215,7 @@
   --color-icon-danger:     #C31219;
   --color-icon-on-danger:  #A11318;
   --color-icon-on-destructive: #FFFFFF;
+  --color-icon-on-action-secondary: #314973;
 
   /* SEMANTIC — Actions
      Secondary is the soft sanmarino surface (50 → 100 on hover) — the
@@ -318,7 +320,7 @@
   --primary:              var(--color-action-primary);
   --primary-foreground:   var(--color-text-on-action);
   --secondary:            var(--color-action-secondary);
-  --secondary-foreground: var(--color-text-strong);
+  --secondary-foreground: var(--color-text-on-action-secondary);
   --muted:                var(--color-bg-highlight);
   --muted-foreground:     var(--color-text-muted);
   --accent:               var(--color-bg-highlight);

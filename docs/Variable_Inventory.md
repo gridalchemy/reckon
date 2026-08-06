@@ -1,6 +1,6 @@
 # Reckon — Variable Inventory
 
-_Last updated: 2026-07-29_
+_Last updated: 2026-08-06_
 
 Companion to CLAUDE.md. Source of truth for the Figma ↔ code naming contract.
 
@@ -71,6 +71,8 @@ Code syntax: `var(--color-<name>)` — e.g. `var(--color-mulberry-600)`, `var(--
 
 **Alpha note:** when a token bakes in alpha, set the alpha on a dedicated alpha-baked **primitive**, not on the alias — Figma aliases inherit alpha from the source, they don't layer it.
 
+**Ramp policy:** three foundational families — `mulberry` (brand), `sanmarino` (base), `graychateau` (neutral) — ship as complete 11-step ramps, because a foundational neutral is coherent, cheap, and routinely reached for even when only a few steps are wired today (graychateau uses 50/200/400 for the disabled palette). The semantic-alert families (`success`, `warning`, `danger`, `info`, `pending`) ship *partial* by design. So "add only when a screen needs it" governs the alert ramps — not the three foundational ones, which are kept whole on purpose.
+
 ### Semantic (mode: `Light`)
 
 Mode set up for forward compatibility with Dark mode (v0.2+); only `Light` is populated today.
@@ -137,6 +139,7 @@ Scope: `STROKE_COLOR`.
 | `text/muted` | `sanmarino/300` | Placeholders, captions |
 | `text/disabled` | `graychateau/400` | Disabled text |
 | `text/on-action` | `base/white` | Text on vivid mulberry button |
+| `text/on-action-secondary` | `sanmarino/700` | Text on the soft `action/secondary` button — needs sanmarino/700 for contrast on the sanmarino/50 surface. Same value as `text/strong`, distinct role; mirrors `text/on-destructive` |
 | `text/on-accent` | `mulberry/700` | Text on soft mulberry surface (active nav) |
 | `text/on-success` | `success/700` | Text on soft success surface (the green tag) |
 | `text/on-warning` | `warning/700` | Text on soft warning surface |
@@ -165,6 +168,7 @@ Mirrors `text/*` plus mulberry/success additions. Scoped versatile (`FRAME_FILL`
 | `icon/muted` | `sanmarino/300` | Low-emphasis / placeholder icons |
 | `icon/disabled` | `graychateau/400` | Disabled icons |
 | `icon/on-action` | `base/white` | Icon on vivid mulberry button |
+| `icon/on-action-secondary` | `sanmarino/700` | Icon on the soft `action/secondary` button — mirrors `text/on-action-secondary` |
 | `icon/action` | `mulberry/600` | Mulberry-colored icon (accent, default state) |
 | `icon/action-strong` | `mulberry/700` | Emphasized mulberry icon — mirrors `text/action-strong`. Same primitive as `icon/on-accent` but distinct standalone role |
 | `icon/on-accent` | `mulberry/700` | Icon on soft mulberry surface (active nav) |
@@ -411,10 +415,7 @@ Authored directly in Figma, not via variables. CSS values live in `globals.css` 
 
 ## What's deferred
 
-- **`text/on-action-secondary`** — not yet added. The new soft `action/secondary` (sanmarino/50) needs dark text/icon for contrast — currently use `text/strong` (sanmarino/700) or `text/paragraph` (sanmarino/800) directly in the Button component. Promote to a dedicated semantic token if the binding becomes repetitive.
-- **`status/*-on` tokens** for info, pending, warning — the "dark text/icon on the vivid status surface" variant. Need the matching `/900` shades from full ramps which don't exist yet. Danger is now covered via `text/on-danger` / `icon/on-danger` at `danger/800`.
-- **Full ramps** for info, pending, warning — only `/500` anchors exist today. Danger has `/100`, `/200`, `/500`, `/700`, `/800` (missing `/50`, `/300`, `/400`, `/600`, `/900`, `/950`). Add when first screen needs them.
-- **Contessa primitive** — was a placeholder in the original draft, not created. May be repurposed or removed.
+- **Full ramps** for `info` and `pending` — only `/500` anchors exist today. (`success`, `warning`, and `danger` already carry partial ramps: success `/100 /200 /500 /700`, warning `/100 /200 /500 /700`, danger `/100 /200 /500 /700 /800`.) Extend only when a screen needs the missing steps — the alert families are partial by design (see **Ramp policy** under Primitives).
 - **Foundations documentation page** — the 🎨 Foundations page in Figma is still empty. To populate when time allows: color swatches per ramp, semantic role examples, spacing bars, radius row, type specimen.
 
 ---
