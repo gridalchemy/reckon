@@ -7,6 +7,7 @@ A web-based design decision-logging tool. Solo build, 4-week sprint, portfolio p
 - **React 19 + Vite + TypeScript** (scaffolded with `npm create vite@latest`)
 - **Tailwind v4** (CSS-first config in `src/styles/globals.css`, no `tailwind.config.js`)
 - **shadcn/ui** — the `base-nova` style (shadcn v4's default; uses **Base UI** primitives, not Radix). Components live in `src/components/ui/` and are owned source, edit freely.
+- **React Router v7** (`react-router-dom`, library mode — `<BrowserRouter>` + `<Routes>`, no data loaders / no framework mode). Routes live in `src/routes/`; the shared layout is `src/components/layout/AppShell.tsx`. Not every screen is a route — **Settings** is a drawer over the current screen (not `/settings`) and **Entry Detail** is a modal (no `/entry/:id`). SPA fallback for Cloudflare Pages lives at `public/_redirects` (`/* /index.html 200`) so deep-links don't 404 on prod refresh.
 - **Lucide** icons
 - **Fuse.js** for fuzzy search
 - **idb** (IndexedDB wrapper) for local storage
