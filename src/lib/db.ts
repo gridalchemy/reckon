@@ -84,6 +84,11 @@ export interface CreateEntryInput {
   state: EntryState
   projectId?: string
   tags: string[]
+  /**
+   * Foreign key into `options[].id` — the option the user is leaning
+   * toward. Optional; Sketches without a leaning omit it.
+   */
+  choiceOptionId?: string
   /** Populated when `state === "decision"`. */
   choice?: string
   /** Populated when `state === "decision"`. */
@@ -98,6 +103,7 @@ export async function createEntry(input: CreateEntryInput): Promise<Entry> {
     title: input.title,
     context: input.context,
     options: input.options,
+    choiceOptionId: input.choiceOptionId,
     choice: input.choice,
     rationale: input.rationale,
     state: input.state,

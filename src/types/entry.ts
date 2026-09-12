@@ -26,6 +26,16 @@ export interface Entry {
   title: string
   context: string
   options: Option[]
+  /**
+   * Foreign key into `options[].id` — the option the user is currently
+   * leaning toward. Optional at every state:
+   * - Sketch: may be `undefined` (still weighing) or set (leaning toward one)
+   * - Decision: set at Lock-in; also snapshotted into `choice` as text
+   *
+   * Kept separate from `choice` so the Sketch's leaning state has a slot
+   * without polluting `choice`, which is reserved for the sealed Decision.
+   */
+  choiceOptionId?: string
   /** Populated when `state === "decision"`. The text of the chosen option. */
   choice?: string
   rationale: string
