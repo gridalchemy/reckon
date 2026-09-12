@@ -346,3 +346,33 @@
     @apply border-border-default;
   }
 }
+
+/* ─── Canvas dots (dotted-canvas surface treatment) ───────────────────────
+   Per locked decision #9 in memory (project_reckon_locked_decisions).
+   Applied to the Home route in AppShell for now; promotion to app-wide is
+   a one-line change (drop the pathname check).
+
+   Values are CSS custom properties on :root so alpha / tile / dot radius
+   can be tuned against the live browser render without a rebuild — open
+   DevTools and edit the values on :root, then move settled numbers back
+   in here.
+
+   Composes with a base background color (bg-bg-page); this utility only
+   sets background-image + background-size, so it stacks cleanly instead
+   of overriding the page color. */
+
+:root {
+  /* sanmarino-300 at α 0.6 — matches locked-decision spec */
+  --canvas-dot-color:  color-mix(in srgb, var(--color-sanmarino-300) 60%, transparent);
+  --canvas-dot-radius: 1px;   /* visible diameter is 2× this */
+  --canvas-dot-tile:   24px;
+}
+
+@utility bg-canvas-dots {
+  background-image: radial-gradient(
+    circle,
+    var(--canvas-dot-color) var(--canvas-dot-radius),
+    transparent var(--canvas-dot-radius)
+  );
+  background-size: var(--canvas-dot-tile) var(--canvas-dot-tile);
+}
