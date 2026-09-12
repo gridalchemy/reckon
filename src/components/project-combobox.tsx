@@ -1,0 +1,188 @@
+import Fuse from "fuse.js"
+import { Check, ChevronDown } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
+import { cn } from "cn"
+
+import {
+  Command,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { createProject, listProjects } from "@/lib/db"
+import type { Project } from "@/types/project"
+
+/**
+ * The project chooser in the New Sketch modal header — a Combobox built by
+ * composing shadcn's Popover (floating dropdown) with Command (searchable
+ * list). Fuse.js handles fuzzy matching over project names.
+ *
+ * Interaction model:
+ * - Empty state (no project selected): pill shows "No project" + chevron.
+ *   Clicking opens the dropdown.
+ * - Selected state: pill shows the project name + chevron. Clicking opens
+ *   the dropdown to change.
+ * - To clear a selection: open the dropdown and pick "No project".
+ *
+ * (The Figma design shows a `×` affordance on the pill when a project is
+ * selected. In code we defer that to a follow-up — it would require a
+ * nested button inside the Popover trigger, which is an a11y anti-pattern
+ * unless carefully handled. The "No project" option in the dropdown gives
+ * the user the same clear affordance without the nesting.)
+ *
+ * The component owns its own projects list (fetched once on mount) so
+ * consumers just pass a `value` / `onValueChange` pair — same shape as
+ * shadcn's Select. Creating a new project happens inline: type text that
+ * doesn't match any project → "Create '[typed]'" appears in the dropdown
+ * → clicking it calls `createProject` and selects the returned project.
+ */
+
+export interface ProjectComboboxProps {
+  /** Selected project's id. `undefined` = "No project" (unassigned). */
+  value: string | undefined
+  /** Called with the new selected id, or `undefined` to clear. */
+  onValueChange: (projectId: string | undefined) => void
+  className?: string
+}
+
+export function ProjectCombobox({
+  value,
+  onValueChange,
+  className,
+}: ProjectComboboxProps) {
+  const [projects, setProjects] = useState<Project[]>([])
+  const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState("")
+
+  // Load projects once on mount. If the modal opens more than once in the
+  // same session and a project was created elsewhere in between (there is
+  // no such path in 8b, but Session 9 might add one), we can revisit this
+  // by refetching on `open` transitions.
+  useEffect(() => {
+    void listProjects().then(setProjects)
+  }, [])
+
+  const fuse = useMemo(
+    () => new Fuse(projects, { keys: ["name"], threshold: 0.4 }),
+    [projects],
+  )
+
+  const filteredProjects = useMemo(() => {
+    const trimmed = search.trim()
+    if (!trimmed) return projects
+    return fuse.search(trimmed).map((result) => result.item)
+  }, [fuse, projects, search])
+
+  const trimmedSearch = search.trim()
+  const exactMatchExists = projects.some(
+    (p) => p.name.toLowerCase() === trimmedSearch.toLowerCase(),
+  )
+  const showCreate = trimmedSearch.length > 0 && !exactMatchExists
+
+  const selectedProject = projects.find((p) => p.id === value)
+  const triggerLabel = selectedProject?.name ?? "No project"
+
+  const handleCreate = async () => {
+    const project = await createProject(trimmedSearch)
+    setProjects((prev) => [...prev, project])
+    onValueChange(project.id)
+    setSearch("")
+    setOpen(false)
+  }
+
+  const handleSelectProject = (projectId: string) => {
+    onValueChange(projectId)
+    setSearch("")
+    setOpen(false)
+  }
+
+  const handleSelectNoProject = () => {
+    onValueChange(undefined)
+    setSearch("")
+    setOpen(false)
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
+        className={cn(
+          "inline-flex max-w-[220px] items-center gap-1.5 rounded-full border border-border-default bg-bg-sunken px-2.5 py-1 text-sm text-text-strong shadow-xs transition-colors hover:bg-bg-highlight focus-visible:shadow-focus focus-visible:outline-none",
+          className,
+        )}
+      >
+        <span className="truncate">{triggerLabel}</span>
+        <ChevronDown
+          className="size-3 shrink-0 text-text-secondary"
+          strokeWidth={2}
+          aria-hidden
+        />
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-64 p-0"
+        align="start"
+        sideOffset={6}
+      >
+        {/* Command has its own filter; we're using Fuse externally so we
+            turn cmdk's built-in filter off with shouldFilter={false}. */}
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder="Search or add a project…"
+            value={search}
+            onValueChange={setSearch}
+          />
+          <CommandList>
+            <CommandItem
+              value="__no-project__"
+              onSelect={handleSelectNoProject}
+              className="cursor-pointer"
+            >
+              <span>No project</span>
+              {value === undefined ? (
+                <Check className="ml-auto size-4" aria-hidden />
+              ) : null}
+            </CommandItem>
+
+            {(filteredProjects.length > 0 || showCreate) ? (
+              <CommandSeparator />
+            ) : null}
+
+            {filteredProjects.length > 0 ? (
+              <CommandGroup heading="Projects">
+                {filteredProjects.map((project) => (
+                  <CommandItem
+                    key={project.id}
+                    value={project.id}
+                    onSelect={() => handleSelectProject(project.id)}
+                    className="cursor-pointer"
+                  >
+                    <span className="truncate">{project.name}</span>
+                    {value === project.id ? (
+                      <Check className="ml-auto size-4" aria-hidden />
+                    ) : null}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ) : null}
+
+            {showCreate ? (
+              <CommandItem
+                value="__create__"
+                onSelect={() => void handleCreate()}
+                className="cursor-pointer text-text-strong"
+              >
+                Create &ldquo;{trimmedSearch}&rdquo;
+              </CommandItem>
+            ) : null}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  )
+}
