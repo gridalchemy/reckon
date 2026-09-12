@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react"
 import { Link } from "react-router-dom"
 
-import { cn } from "@/lib/utils"
+import { cn } from "cn"
 
 /**
  * A row in the sidebar nav — icon + label.

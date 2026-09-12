@@ -124,6 +124,7 @@ If a request isn't here AND isn't in v0.1 scope, treat it as a fresh idea — su
 - Date formatting via `date-fns`.
 - Imports: use the `@/` alias for anything inside `src/`. Never `../../../`.
 - shadcn components are owned source — edit `src/components/ui/*.tsx` directly when the default doesn't match Reckon's tokens or accessibility floor. The `npx shadcn add` command will re-fetch defaults; only run it for new components, not to "update" existing ones.
+- **`cn` helper comes from the `cn` npm package**, not a local `src/lib/utils.ts`. Shadcn v4 base-nova components import it as `import { cn } from "cn"` and every component in the repo mirrors that — one convention, no split. The package is by the shadcn team, drop-in for `twMerge(clsx(...))`, and keeping the shadcn default means every future `npx shadcn add` lands ready to use without an import-rewrite pass. Do not reintroduce `src/lib/utils.ts`.
 
 ## Local development
 
