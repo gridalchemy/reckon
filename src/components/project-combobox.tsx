@@ -124,11 +124,18 @@ export function ProjectCombobox({
           aria-hidden
         />
       </PopoverTrigger>
-      <PopoverContent
-        className="w-64 p-0"
-        align="start"
-        sideOffset={6}
-      >
+      {/* PopoverContent rendered conditionally on `open` for the same
+          reason as NewSketchModal (see Sidebar.tsx) — Base UI's ending
+          state gets stuck in this base-nova + Base UI combo, so the
+          popover stays in the DOM at opacity 1 after close (only
+          pointer-events: none). Conditional render unmounts it cleanly
+          when `open` flips false. */}
+      {open ? (
+        <PopoverContent
+          className="w-64 p-0"
+          align="start"
+          sideOffset={6}
+        >
         {/* Command has its own filter; we're using Fuse externally so we
             turn cmdk's built-in filter off with shouldFilter={false}. */}
         <Command shouldFilter={false}>
@@ -183,6 +190,7 @@ export function ProjectCombobox({
           </CommandList>
         </Command>
       </PopoverContent>
+      ) : null}
     </Popover>
   )
 }

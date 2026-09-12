@@ -1,7 +1,9 @@
 import { Home, Info, Library, Plus, Settings2, Sparkles } from "lucide-react"
+import { useState } from "react"
 import { useLocation } from "react-router-dom"
 
 import NavItem from "@/components/layout/NavItem"
+import { NewSketchModal } from "@/components/new-sketch-modal"
 
 /**
  * The lefthand rail. Mirrors the Sidebar frame in Figma (node 760:2176):
@@ -11,8 +13,10 @@ import NavItem from "@/components/layout/NavItem"
  *
  * Active state is derived from the current route (useLocation) so the URL is
  * the single source of truth. Settings is a <button> that fires a placeholder
- * — the drawer lands in Session 11. "+ New Sketch" is likewise a placeholder
- * — the capture flow lands in Session 8.
+ * — the drawer lands in Session 11. "+ New Sketch" opens the capture modal
+ * (Session 8b). The modal's open state is owned here so a future second
+ * trigger (Home card CTA in Session 15) can lift the state to a shared
+ * parent without changing this component.
  */
 
 const ROUTED_ITEMS = [
@@ -23,6 +27,7 @@ const ROUTED_ITEMS = [
 
 export default function Sidebar() {
   const { pathname } = useLocation()
+  const [newSketchOpen, setNewSketchOpen] = useState(false)
 
   return (
     <aside className="sticky top-0 flex h-screen w-[248px] shrink-0 flex-col gap-5 border-r border-border-default bg-bg-sidebar px-5 py-7">
@@ -34,7 +39,7 @@ export default function Sidebar() {
 
         <button
           type="button"
-          onClick={() => console.log("New Sketch — Session 8")}
+          onClick={() => setNewSketchOpen(true)}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-action-primary px-4 py-1.5 text-sm font-medium text-text-on-action shadow-sm transition-colors hover:bg-action-primary-hover focus-visible:shadow-focus focus-visible:outline-none"
         >
           <Plus className="size-[18px] shrink-0" strokeWidth={2} aria-hidden />
@@ -84,6 +89,17 @@ export default function Sidebar() {
         <span aria-hidden>·</span>
         <span>Impressum</span>
       </footer>
+
+      {/* Modal renders via portal, so tree position is state-owner only.
+          Rendered conditionally on `newSketchOpen` because Base UI Dialog's
+          data-ending-style state gets stuck in this base-nova + Base UI
+          combo — the popup never auto-unmounts after close. Conditional
+          render sidesteps it: React unmounts the whole modal when the
+          state flips to false. No visible behavior change since the modal
+          already resets its internal state on close. */}
+      {newSketchOpen ? (
+        <NewSketchModal open={newSketchOpen} onOpenChange={setNewSketchOpen} />
+      ) : null}
     </aside>
   )
 }
