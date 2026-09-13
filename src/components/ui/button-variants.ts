@@ -11,7 +11,11 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-action-secondary-hover aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:
-          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
+          // Reckon Ghost hover: bg-sunken (#F4F6FB, subtle) + shadow-sm.
+          // Text stays as text-strong (no darken) — matches Figma Ghost
+          // 819:263. The base-nova default `bg-muted` was too dark
+          // (bg-highlight #E9EDF5) and had no shadow.
+          "text-text-strong hover:bg-bg-sunken hover:shadow-sm aria-expanded:bg-bg-sunken",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",

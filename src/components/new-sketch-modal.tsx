@@ -130,8 +130,38 @@ export function NewSketchModal({
     setOptions((prev) => [...prev, makeEmptyOption()])
   }
 
+  // Clear a validation error the moment the field it's attached to becomes
+  // valid again. Errors only appear after Save is clicked; once the user
+  // starts fixing them, they should not linger. Never SETS new errors from
+  // typing — that would validate pre-emptively.
+  const clearErrorIfValid = (
+    field: keyof ValidationErrors,
+    isValid: boolean,
+  ) => {
+    if (errors[field] && isValid) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }))
+    }
+  }
+
+  const handleTitleChange = (value: string) => {
+    setTitle(value)
+    clearErrorIfValid("title", value.trim().length > 0)
+  }
+
+  const handleContextChange = (value: string) => {
+    setContext(value)
+    clearErrorIfValid("context", value.trim().length > 0)
+  }
+
   const handleOptionTextChange = (id: string, text: string) => {
-    setOptions((prev) => prev.map((o) => (o.id === id ? { ...o, text } : o)))
+    setOptions((prev) => {
+      const next = prev.map((o) => (o.id === id ? { ...o, text } : o))
+      clearErrorIfValid(
+        "options",
+        next.some((o) => o.text.trim().length > 0),
+      )
+      return next
+    })
   }
 
   const commitTag = () => {
@@ -196,13 +226,18 @@ export function NewSketchModal({
                 New Sketch
               </span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-5">
               <ProjectCombobox
                 value={projectId}
                 onValueChange={setProjectId}
               />
               <DialogPrimitive.Close
-                className="flex size-[18px] items-center justify-center rounded-sm text-text-secondary transition-colors hover:text-text-headline focus-visible:shadow-focus focus-visible:outline-none"
+                // Container is 30px so the hover bg has 6px of padding on
+                // each side of the 18px icon. Base state has no bg, so the
+                // extra area is invisible; on hover the bg-bg-hover fill
+                // + rounded-md make the icon sit inside a soft square.
+                // Matches Figma 1825:3009.
+                className="flex size-[30px] items-center justify-center rounded-md p-1.5 text-text-secondary transition-colors hover:bg-bg-hover hover:text-text-headline focus-visible:shadow-focus focus-visible:outline-none"
                 aria-label="Close"
               >
                 <XIcon className="size-[18px]" strokeWidth={2} aria-hidden />
@@ -215,14 +250,14 @@ export function NewSketchModal({
             <input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => handleTitleChange(e.target.value)}
               placeholder="What are you working through?"
               className="w-full bg-transparent font-display text-xl font-bold leading-7 text-text-headline outline-none placeholder:text-text-muted"
               autoFocus
               aria-invalid={errors.title ? "true" : undefined}
             />
             {errors.title ? (
-              <p className="mt-1 text-xs text-mulberry-700" role="alert">
+              <p className="mt-1 text-xs text-text-danger" role="alert">
                 {errors.title}
               </p>
             ) : null}
@@ -239,14 +274,14 @@ export function NewSketchModal({
             <textarea
               id="new-sketch-context"
               value={context}
-              onChange={(e) => setContext(e.target.value)}
+              onChange={(e) => handleContextChange(e.target.value)}
               placeholder="What prompted this? What's the constraint?"
               rows={2}
               className="w-full resize-none bg-transparent font-sans text-sm leading-5 text-text-paragraph outline-none placeholder:text-text-muted"
               aria-invalid={errors.context ? "true" : undefined}
             />
             {errors.context ? (
-              <p className="text-xs text-mulberry-700" role="alert">
+              <p className="text-xs text-text-danger" role="alert">
                 {errors.context}
               </p>
             ) : null}
@@ -294,7 +329,7 @@ export function NewSketchModal({
               Add option
             </Button>
             {errors.options ? (
-              <p className="text-xs text-mulberry-700" role="alert">
+              <p className="text-xs text-text-danger" role="alert">
                 {errors.options}
               </p>
             ) : null}
@@ -327,7 +362,11 @@ export function NewSketchModal({
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border-default bg-bg-sunken px-2.5 py-1 text-sm text-text-strong"
+                  // Tag base sizing matches the Figma Tag component
+                  // (1823:2968): px-2 py-1, text-xs, gap-1. Hover swaps
+                  // border-default → border-highlight (bg stays sunken)
+                  // per Figma Tag Hover (1823:2971).
+                  className="inline-flex items-center gap-1 rounded-full border border-border-default bg-bg-sunken px-2 py-1 text-xs leading-4 text-text-strong transition-colors hover:border-border-highlight"
                 >
                   {tag}
                   <button

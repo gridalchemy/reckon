@@ -113,14 +113,14 @@ export function ProjectCombobox({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         className={cn(
-          "inline-flex max-w-[220px] items-center gap-1.5 rounded-full border border-border-default bg-bg-sunken px-2.5 py-1 text-sm text-text-strong shadow-xs transition-colors hover:bg-bg-highlight focus-visible:shadow-focus focus-visible:outline-none",
+          "inline-flex max-w-[220px] items-center gap-1.5 rounded-full border border-border-default bg-bg-sunken px-2.5 py-1 text-sm text-text-strong shadow-xs transition-colors hover:border-border-highlight hover:bg-bg-highlight focus-visible:shadow-focus focus-visible:outline-none",
           className,
         )}
       >
         <span className="truncate">{triggerLabel}</span>
         <ChevronDown
-          className="size-3 shrink-0 text-text-secondary"
-          strokeWidth={2}
+          className="size-4 shrink-0 text-text-secondary"
+          strokeWidth={1.25}
           aria-hidden
         />
       </PopoverTrigger>
@@ -132,64 +132,88 @@ export function ProjectCombobox({
           when `open` flips false. */}
       {open ? (
         <PopoverContent
-          className="w-64 p-0"
+          className="w-[265px] p-0"
           align="start"
           sideOffset={6}
         >
-        {/* Command has its own filter; we're using Fuse externally so we
-            turn cmdk's built-in filter off with shouldFilter={false}. */}
-        <Command shouldFilter={false}>
-          <CommandInput
-            placeholder="Search or add a project…"
-            value={search}
-            onValueChange={setSearch}
-          />
-          <CommandList>
-            <CommandItem
-              value="__no-project__"
-              onSelect={handleSelectNoProject}
-              className="cursor-pointer"
-            >
-              <span>No project</span>
-              {value === undefined ? (
-                <Check className="ml-auto size-4" aria-hidden />
-              ) : null}
-            </CommandItem>
-
-            {(filteredProjects.length > 0 || showCreate) ? (
-              <CommandSeparator />
-            ) : null}
-
-            {filteredProjects.length > 0 ? (
-              <CommandGroup heading="Projects">
-                {filteredProjects.map((project) => (
-                  <CommandItem
-                    key={project.id}
-                    value={project.id}
-                    onSelect={() => handleSelectProject(project.id)}
-                    className="cursor-pointer"
-                  >
-                    <span className="truncate">{project.name}</span>
-                    {value === project.id ? (
-                      <Check className="ml-auto size-4" aria-hidden />
-                    ) : null}
-                  </CommandItem>
-                ))}
+          {/* Command has its own filter; we're using Fuse externally so we
+              turn cmdk's built-in filter off with shouldFilter={false}.
+              We control cmdk's `value` prop to point at the chosen item —
+              that way the highlight (bg-bg-hover) starts on the chosen
+              row on open, and moves cleanly to whichever row the user
+              hovers next. Chosen identity is signaled by the checkmark
+              alone; the bg follows the cursor. Sentinel "__no-project__"
+              is used when nothing is selected. */}
+          <Command
+            shouldFilter={false}
+            value={value ?? "__no-project__"}
+          >
+            <CommandInput
+              placeholder="Find or create…"
+              value={search}
+              onValueChange={setSearch}
+            />
+            <CommandList>
+              {/* Headless CommandGroup wraps "No project" so it gets the
+                  same p-1 outer padding the Projects section has —
+                  otherwise the row's bg would touch the dividers. */}
+              <CommandGroup>
+                <CommandItem
+                  value="__no-project__"
+                  onSelect={handleSelectNoProject}
+                  className="cursor-pointer"
+                >
+                  <span className="min-w-0 flex-1 truncate">No project</span>
+                  {value === undefined ? (
+                    <Check
+                      className="ml-auto size-4 text-icon-action"
+                      aria-hidden
+                    />
+                  ) : null}
+                </CommandItem>
               </CommandGroup>
-            ) : null}
 
-            {showCreate ? (
-              <CommandItem
-                value="__create__"
-                onSelect={() => void handleCreate()}
-                className="cursor-pointer text-text-strong"
-              >
-                Create &ldquo;{trimmedSearch}&rdquo;
-              </CommandItem>
-            ) : null}
-          </CommandList>
-        </Command>
-      </PopoverContent>
+              {(filteredProjects.length > 0 || showCreate) ? (
+                <CommandSeparator />
+              ) : null}
+
+              {filteredProjects.length > 0 ? (
+                <CommandGroup heading="Projects">
+                  {filteredProjects.map((project) => (
+                    <CommandItem
+                      key={project.id}
+                      value={project.id}
+                      onSelect={() => handleSelectProject(project.id)}
+                      className="cursor-pointer"
+                    >
+                      <span className="min-w-0 flex-1 truncate">
+                        {project.name}
+                      </span>
+                      {value === project.id ? (
+                        <Check
+                          className="ml-auto size-4 text-icon-action"
+                          aria-hidden
+                        />
+                      ) : null}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              ) : null}
+
+              {showCreate ? (
+                <CommandGroup>
+                  <CommandItem
+                    value="__create__"
+                    onSelect={() => void handleCreate()}
+                    className="cursor-pointer text-text-strong"
+                  >
+                    Create &ldquo;{trimmedSearch}&rdquo;
+                  </CommandItem>
+                </CommandGroup>
+              ) : null}
+            </CommandList>
+          </Command>
+        </PopoverContent>
       ) : null}
     </Popover>
   )
