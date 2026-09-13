@@ -211,7 +211,7 @@ export function NewSketchModal({
             reliable transitionend, or use actionsRef.unmount(). */}
         <DialogPrimitive.Backdrop
           data-slot="dialog-overlay"
-          className="fixed inset-0 z-40 bg-bg-backdrop backdrop-blur-[1px]"
+          className="fixed inset-0 z-40 bg-bg-backdrop backdrop-blur-xs"
         />
         <DialogPrimitive.Popup
           data-slot="dialog-content"

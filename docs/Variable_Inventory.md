@@ -398,7 +398,9 @@ Each style binds its family and size to the Typography variables. Weight, line-h
 
 ## Effect Styles
 
-Authored directly in Figma, not via variables. CSS values live in `globals.css` (shipped in commit `fb4bf61`).
+Authored directly in Figma, not via variables. CSS values live in `globals.css` (shadows shipped in commit `fb4bf61`; backdrop-blur reconciled during Session 8b).
+
+### Shadows
 
 | Figma effect style | Description (Dev Mode) | CSS to add to `@theme` |
 |---|---|---|
@@ -410,6 +412,15 @@ Authored directly in Figma, not via variables. CSS values live in `globals.css` 
 | `shadow-2xl` | `shadow-2xl` | `0 25px 50px -12px rgb(0 0 0 / 0.25)` |
 | `shadow-3xl` | `shadow-3xl` | `-20px 0 60px -20px rgb(0 0 0 / 0.35)` (lateral shadow for Settings Drawer sliding from right edge) |
 | `focus ring` | `shadow-focus` | `0 0 0 3px rgb(200 59 134 / 0.30)` (mulberry/600 @ 30%, spread 3) |
+
+### Backdrop Blur
+
+Figma "Background blur" effect styles. Tailwind v4 shares one `--blur-*` namespace between `blur-*` and `backdrop-blur-*` utilities — overriding these variables shifts both. The app uses `backdrop-blur-*` only (modal / drawer scrims); plain `blur-*` has no consumers today.
+
+| Figma effect style | Applied to | CSS to add to `@theme` |
+|---|---|---|
+| `backdrop-blur-xs` | New Sketch modal scrim (via `<DialogPrimitive.Backdrop>`) | `--blur-xs: 2px;` |
+| `backdrop-blur-sm` | Defined in Figma; unapplied — kept mirrored so future scrims can reach for it without a drift patch | `--blur-sm: 4px;` |
 
 ---
 
