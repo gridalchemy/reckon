@@ -1,16 +1,13 @@
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { Plus, X as XIcon } from "lucide-react"
 import { useCallback, useState } from "react"
-import { cn } from "cn"
 
+import { OptionRow } from "@/components/option-row"
+import { ProjectCombobox } from "@/components/project-combobox"
 import { Button } from "@/components/ui/button"
 import { FeaturedIcons } from "@/components/ui/featured-icons"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@/components/ui/radio-group"
 import { createEntry } from "@/lib/db"
-import { ProjectCombobox } from "@/components/project-combobox"
+import type { Option } from "@/types/entry"
 
 /**
  * The New Sketch capture modal (Figma node 1823:2642). Composed directly
@@ -25,6 +22,12 @@ import { ProjectCombobox } from "@/components/project-combobox"
  * - Empty option rows persist through save (§ Empty option rows persist).
  *   Empties are filtered out only at Lock-in (Session 10).
  *
+ * Options use the Lean-pill pattern (Design 2, Figma 1867:2430) — see
+ * OptionRow. RadioGroup was dropped after the mid-session UX call: a
+ * required-feeling radio was misleading for an exploratory Sketch, and
+ * radios can't natively deselect. Lean is a proper toggle, single-lean
+ * across the list (leaning Option B auto-unleans Option A).
+ *
  * The modal is controlled from the outside (Sidebar owns `open`), so any
  * future trigger (Home card CTA, keyboard shortcut) can raise the state
  * up to a shared parent without changing this component.
@@ -37,12 +40,7 @@ export interface NewSketchModalProps {
   onSaved?: (entryId: string) => void
 }
 
-interface DraftOption {
-  id: string
-  text: string
-}
-
-const makeEmptyOption = (): DraftOption => ({
+const makeEmptyOption = (): Option => ({
   id: crypto.randomUUID(),
   text: "",
 })
@@ -61,7 +59,7 @@ export function NewSketchModal({
   const [title, setTitle] = useState("")
   const [projectId, setProjectId] = useState<string | undefined>(undefined)
   const [context, setContext] = useState("")
-  const [options, setOptions] = useState<DraftOption[]>(() => [
+  const [options, setOptions] = useState<Option[]>(() => [
     makeEmptyOption(),
     makeEmptyOption(),
   ])
@@ -128,6 +126,37 @@ export function NewSketchModal({
 
   const handleAddOption = () => {
     setOptions((prev) => [...prev, makeEmptyOption()])
+  }
+
+  const handleRemoveOption = (id: string) => {
+    setOptions((prev) => {
+      const next = prev.filter((o) => o.id !== id)
+      // If the leaning option was removed, clear the leaning state so
+      // choiceOptionId never points at an id that no longer exists.
+      if (choiceOptionId === id) {
+        setChoiceOptionId(undefined)
+      }
+      // Removing an option can also clear the "at least one option"
+      // validation if the removal happened to be an empty row while a
+      // filled one remained, or fire it if the last filled row is gone.
+      // clearErrorIfValid only clears; it never adds errors from typing,
+      // so this is safe.
+      clearErrorIfValid(
+        "options",
+        next.some((o) => o.text.trim().length > 0),
+      )
+      return next
+    })
+  }
+
+  const handleLean = (id: string) => {
+    // Single-lean across the list: leaning Option B auto-unleans Option A
+    // because there's only one choiceOptionId slot.
+    setChoiceOptionId(id)
+  }
+
+  const handleUnlean = () => {
+    setChoiceOptionId(undefined)
   }
 
   // Clear a validation error the moment the field it's attached to becomes
@@ -287,43 +316,29 @@ export function NewSketchModal({
             ) : null}
           </div>
 
-          {/* Options you're weighing */}
+          {/* Options you're weighing (Design 2 — Lean pill, not radio) */}
           <div className="flex flex-col gap-2.5 border-b border-border-divider px-6 pt-4 pb-4">
             <span className="font-sans text-xs font-medium uppercase leading-4 tracking-[0.3px] text-text-secondary">
               Options you&rsquo;re weighing
             </span>
-            <RadioGroup
-              value={choiceOptionId ?? ""}
-              onValueChange={(v) =>
-                setChoiceOptionId(v === "" ? undefined : String(v))
-              }
-            >
+            <div className="flex flex-col gap-1">
               {options.map((option, index) => (
-                <div
+                <OptionRow
                   key={option.id}
-                  className="flex items-center gap-2 rounded-lg p-2"
-                >
-                  <RadioGroupItem
-                    value={option.id}
-                    id={`new-sketch-option-${option.id}`}
-                    aria-label={option.text || `Option ${String.fromCharCode(65 + index)}`}
-                  />
-                  <input
-                    type="text"
-                    value={option.text}
-                    onChange={(e) =>
-                      handleOptionTextChange(option.id, e.target.value)
-                    }
-                    placeholder={`Option ${String.fromCharCode(65 + index)}`}
-                    className="min-w-0 flex-1 bg-transparent font-sans text-sm leading-5 text-text-paragraph outline-none placeholder:text-text-muted"
-                  />
-                </div>
+                  option={option}
+                  index={index}
+                  isLeaning={choiceOptionId === option.id}
+                  onTextChange={handleOptionTextChange}
+                  onLean={handleLean}
+                  onUnlean={handleUnlean}
+                  onRemove={handleRemoveOption}
+                />
               ))}
-            </RadioGroup>
+            </div>
             <Button
               variant="ghost"
               onClick={handleAddOption}
-              className={cn("self-start rounded-xl px-4 py-1.5 text-text-strong")}
+              className="self-start rounded-xl px-4 py-1.5"
             >
               <Plus className="size-[18px]" strokeWidth={2} aria-hidden />
               Add option

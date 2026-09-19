@@ -353,6 +353,19 @@
   * {
     @apply border-border-default;
   }
+
+  /* Restore cursor: pointer on enabled buttons. Modern browsers ship
+     `button { cursor: default }` in their UA stylesheet (a spec change
+     from the pointer-by-default of yore), and shadcn's base-nova doesn't
+     put it back. This one rule catches every <button> in the app —
+     Save, Add option, Close ×, tag ×, Lean, Combobox trigger, sidebar
+     buttons, etc. Disabled buttons keep the arrow (matches "not
+     clickable"). Div-based clickable patterns (e.g. cmdk CommandItem
+     renders a div, not a button) still need `cursor-pointer` on the
+     usage site — the selector below only covers native <button>. */
+  button:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 /* ─── Canvas dots (dotted-canvas surface treatment) ───────────────────────

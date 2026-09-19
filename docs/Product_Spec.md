@@ -138,7 +138,7 @@ Empty state: zones gracefully empty for first-time real users; Demo Mode populat
 - Light, fast, single-screen modal
 - Header: "New Sketch" until saved, then just "Sketch" (empty → filled → sealed = New Sketch → Sketch → Decision)
 - Project as a header pill (Combobox with fuzzy find, "No project" option, "Create '[typed]'" for no-match)
-- Fields: title (as the modal's own title, editorial weight), context, options (radio group, at-save an option becomes the choice), rationale, tags
+- Fields: title (as the modal's own title, editorial weight), context, options (Lean-pill rows — see § Options & the Lean pill below), rationale, tags
 - Tab navigation between fields
 - ⌘+Enter to save (affordance TBC with Claude Code)
 - Save Sketch CTA (primary)
@@ -147,6 +147,19 @@ Empty state: zones gracefully empty for first-time real users; Demo Mode populat
 **Persistence rule (create mode):** nothing is written to storage until the user commits with Save Sketch (button or ⌘+Enter). Closing the modal with ✕ discards everything typed. No autosave, no draft state, no "unsaved changes" prompt. The Sketch itself is Reckon's draft primitive — a pre-Sketch draft layer would be a category of its own and isn't warranted for v0.1. This keeps the Library honest (only intentionally-saved entries live there) and avoids ghost entries from abandoned modals.
 
 **Empty option rows persist.** Adding an option row and leaving it blank does not strip it on blur or on save. Empty rows are scaffolding for thinking, and stripping them punishes the "I'm about to type here" moment. Empty rows are filtered out only at Lock-in time, when a Sketch becomes a Decision.
+
+**Options & the Lean pill (Design 2, decided mid-Session-8b — replaces the earlier radio-group model).**
+
+Each option is a text-input row. Selection is optional and expressed through a *Lean pill* that surfaces on the row's right edge, not through a radio dot on the left:
+
+- **Empty row:** no Lean pill (leaning toward nothing is meaningless). The `×` remove affordance is available on hover — a misclick on "+ Add option" should never trap the user with an unremovable blank row.
+- **Filled + not-leaning:** on row hover (or keyboard focus-within), a ghost **↑ Lean** pill appears on the right. Clicking it makes the row the currently-leaned option. The `×` remove affordance is also hover-revealed.
+- **Leaning:** a solid mulberry **↑ Leaning** pill is always visible on the leaned row (regardless of hover). The row's text weight bumps to medium as a subtle visual emphasis. Clicking the pill un-leans, returning to nothing-leaning. `×` remains hover-revealed.
+- **Locked/Sealed (Session 10):** on a Decision, the leaned row's mulberry pill renders at 75% opacity and stops being interactive; no `×` at all.
+
+Only one option can lean at a time (single-lean). Leaning Option B automatically un-leans Option A — enforced by the fact that `Entry.choiceOptionId` is a single string field. Save works with or without a leaning option; the Sketch stage is exploratory. At Lock-in, the currently-leaned option pre-selects into the ceremony (if none is leaned but only one option has text, that option auto-selects — a click-saver, not a shortcut; the wax-seal ceremony still runs).
+
+**Why not a radio group.** The original design used a radio group with the intent "at-save an option becomes the choice." Two UX issues surfaced when implemented: (1) radios don't natively deselect — a user who click-tested three options during exploration was stuck with whichever they clicked last, contradicting the exploratory mental model of a Sketch; (2) the visual "pick one" pressure was misleading for a stage where selection is optional. The Lean pill is a proper toggle, matches the exploratory frame, and preserves the "leaning toward" signal for pre-selection at Lock-in.
 
 ---
 

@@ -125,6 +125,7 @@ If a request isn't here AND isn't in v0.1 scope, treat it as a fresh idea — su
 - Imports: use the `@/` alias for anything inside `src/`. Never `../../../`.
 - shadcn components are owned source — edit `src/components/ui/*.tsx` directly when the default doesn't match Reckon's tokens or accessibility floor. The `npx shadcn add` command will re-fetch defaults; only run it for new components, not to "update" existing ones.
 - **`cn` helper comes from the `cn` npm package**, not a local `src/lib/utils.ts`. Shadcn v4 base-nova components import it as `import { cn } from "cn"` and every component in the repo mirrors that — one convention, no split. The package is by the shadcn team, drop-in for `twMerge(clsx(...))`, and keeping the shadcn default means every future `npx shadcn add` lands ready to use without an import-rewrite pass. Do not reintroduce `src/lib/utils.ts`.
+- **`cursor: pointer` on enabled `<button>` elements is applied globally** by a single rule in `src/styles/globals.css` (`@layer base { button:not(:disabled) { cursor: pointer } }`). Modern browsers ship `button { cursor: default }` in their UA stylesheet and shadcn's base-nova doesn't restore it. Do not add `cursor-pointer` per-button — the base rule covers Save/Add option/Close ×/pills/Combobox trigger/sidebar/etc. **Do** add `cursor-pointer` on div-based clickable patterns (e.g. cmdk's `CommandItem` renders a `<div>`, not a `<button>` — the base rule doesn't reach it).
 
 ## Local development
 
