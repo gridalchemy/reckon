@@ -105,14 +105,14 @@ Considered and intentionally deferred — these may land in v0.2 if v0.1 ships w
 
 - Sketch-to-prompt generation (turn a Sketch into an LLM prompt skeleton)
 - Auto / scheduled Reckoning generation (v0.1 is manual-trigger only by locked decision)
-- Multi-user / shared workspaces
-- Cloud sync across devices
 - Dark mode
 - Mobile / responsive layouts
 - Richer entry media (images, attachments)
-- Public sharing of individual Reckonings as read-only URLs
-- Export beyond JSON (PDF, Markdown)
 - Domain swap from `*.pages.dev` to a custom domain (`reckonapp.com` is taken; candidates are `reckon-design.com` / `reckonwebapp.com`, decision open)
+
+**Cut entirely (not v0.2, not parked):** multi-user / shared workspaces, cloud sync across devices, public sharing of Reckonings as read-only URLs, route-based Entry Detail, export beyond JSON. All five require a backend Reckon deliberately doesn't have — they're the same architectural shift wearing five different names, not independent features. If real post-launch demand ever surfaces, reconsider them together as a bundle, not one at a time.
+
+**Phase D experiment (in scope for v0.1, not v0.2):** a single WebGL orb as the Reckoning generation-moment loader — reference [libraries.dev/orbs](https://libraries.dev/orbs). Kept only if it reads as thoughtful next to prose synthesis; cut if gimmicky. Never for generic loading states.
 
 If a request isn't here AND isn't in v0.1 scope, treat it as a fresh idea — surface it before scoping into the build.
 

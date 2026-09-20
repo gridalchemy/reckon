@@ -182,7 +182,7 @@ Card grid grouped by project, with an Unassigned bucket at bottom grouped by dat
 
 ### 4. Entry Detail → Session 6
 
-Modal — settled, not open for revisiting. Opens over whatever screen the user is on. Route-based Entry Detail (`/entry/:id`) was considered and rejected for v0.1: shareable entry URLs are meaningless in a local-only app, since a shared link would resolve against the visitor's own empty IndexedDB. Routes only become relevant in v0.2 alongside cloud sync or public sharing.
+Modal — settled, not open for revisiting. Opens over whatever screen the user is on. Route-based Entry Detail (`/entry/:id`) was considered and rejected: shareable entry URLs are meaningless in a local-only app, since a shared link would resolve against the visitor's own empty IndexedDB. Cloud sync and public sharing are also cut, so the routes bundle has no future architecture to slot into either.
 
 - View or edit a single Sketch or Decision
 - Header: icon, state label ("Sketch" or "Decision"), project pill, timestamp, close
@@ -240,6 +240,8 @@ Consequences:
 
 **Auto / scheduled generation is parked for v0.2** — Reckon is local-only, no server-side scheduler is worth building at this scope. Manual trigger is the intentional design constraint, not a technical shortcut.
 
+**Generation-moment visual (Phase D experiment):** a single WebGL orb sits in the compose panel while the Reckoning is being generated — the one place in Reckon where a rich, ceremonial loader is warranted. Reference: [libraries.dev/orbs](https://libraries.dev/orbs) ([source](https://github.com/Jakubantalik/Libraries.dev)). Treated as an experiment, not a commitment — kept only if it reads as thoughtful rather than gimmicky next to prose synthesis. Never used for generic loading states.
+
 Minimum-data threshold before a Reckoning is generatable (e.g., "you need at least N decisions to reckon") — TBD during Session 16 empty state work.
 
 ---
@@ -290,18 +292,15 @@ Four things that *are* the product. If Week 3 is at risk, cut everything else fi
 
 - Sketch-to-prompt generation
 - Auto / scheduled Reckoning generation
-- Multi-user / shared workspaces
-- Cloud sync across devices
 - Dark mode
 - Mobile / responsive layouts
 - Richer entry media
-- Public sharing of individual Reckonings as read-only URLs
-- Export beyond JSON
 - Global search (Cmd+K)
-- Route-based Entry Detail (only meaningful alongside cloud sync or public sharing — parked as a bundle)
 - Custom range on Reckoning trigger
 - Minimum-data threshold logic for Reckoning generation (may land in v0.1 via empty-state work)
 - Custom domain swap
+
+**Cut from v0.2 (would require a backend Reckon doesn't have):** multi-user / shared workspaces, cloud sync, public sharing of Reckonings as read-only URLs, route-based Entry Detail, export beyond JSON. If demand surfaces post-launch these can be reconsidered as a bundle — they're the same architectural shift, not independent features.
 
 ---
 
