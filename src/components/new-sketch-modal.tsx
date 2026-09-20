@@ -1,6 +1,6 @@
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { Plus, X as XIcon } from "lucide-react"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import { OptionRow } from "@/components/option-row"
 import { ProjectCombobox } from "@/components/project-combobox"
@@ -71,6 +71,20 @@ export function NewSketchModal({
   const [tagDraft, setTagDraft] = useState("")
   const [errors, setErrors] = useState<ValidationErrors>({})
   const [saving, setSaving] = useState(false)
+  // Base UI 1.8's animation-completion detection doesn't fire for our
+  // popup in this setup — `data-ending-style` gets stuck and the popup
+  // never auto-unmounts, even without any exit animation. `actionsRef`
+  // exposes Base UI's imperative `unmount()` escape hatch; we call it
+  // whenever `open` transitions to false, so every close path (Base
+  // UI's Escape/×/backdrop, plus our post-save close) triggers cleanup.
+  // The `hasEverOpened` gate skips the initial mount so we don't fire
+  // a spurious onOpenChangeComplete(false) before the popup ever opens.
+  const actionsRef = useRef<DialogPrimitive.Root.Actions | null>(null)
+  const hasEverOpenedRef = useRef(false)
+  useEffect(() => {
+    if (open) hasEverOpenedRef.current = true
+    else if (hasEverOpenedRef.current) actionsRef.current?.unmount()
+  }, [open])
 
   const reset = useCallback(() => {
     setTitle("")
@@ -228,16 +242,12 @@ export function NewSketchModal({
   }
 
   return (
-    <DialogPrimitive.Root open={open} onOpenChange={handleOpenChange}>
+    <DialogPrimitive.Root
+      open={open}
+      onOpenChange={handleOpenChange}
+      actionsRef={actionsRef}
+    >
       <DialogPrimitive.Portal>
-        {/* No enter/exit animations — Base UI's data-ending-style waits for
-            a transitionend/animationend on the popup to unmount, and the
-            base-nova + tw-animate-css combo doesn't cleanly fire either
-            for it (the `exit` keyframe has no 0% frame, animation-fill-mode
-            is `none`, so the animation loops without a clean end event).
-            Skipping animation entirely for v0.1; a follow-up can revisit
-            with a `transition-*` (not `animate-*`) approach that fires a
-            reliable transitionend, or use actionsRef.unmount(). */}
         <DialogPrimitive.Backdrop
           data-slot="dialog-overlay"
           className="fixed inset-0 z-40 bg-bg-backdrop backdrop-blur-xs"

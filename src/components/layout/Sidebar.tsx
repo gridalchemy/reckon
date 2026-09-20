@@ -90,16 +90,8 @@ export default function Sidebar() {
         <span>Impressum</span>
       </footer>
 
-      {/* Modal renders via portal, so tree position is state-owner only.
-          Rendered conditionally on `newSketchOpen` because Base UI Dialog's
-          data-ending-style state gets stuck in this base-nova + Base UI
-          combo — the popup never auto-unmounts after close. Conditional
-          render sidesteps it: React unmounts the whole modal when the
-          state flips to false. No visible behavior change since the modal
-          already resets its internal state on close. */}
-      {newSketchOpen ? (
-        <NewSketchModal open={newSketchOpen} onOpenChange={setNewSketchOpen} />
-      ) : null}
+      {/* Modal renders via portal, so tree position is state-owner only. */}
+      <NewSketchModal open={newSketchOpen} onOpenChange={setNewSketchOpen} />
     </aside>
   )
 }
