@@ -1,6 +1,6 @@
 # Reckon — Product Spec (v0.1)
 
-*Living document. Last updated: Session 8 prep — persistence rules for New Sketch (create mode) and Entry Detail (edit mode) locked; empty-option-row behavior locked; frictionless-option-deletion stance recorded.*
+*Living document. Last updated: Session 8b done. Lean-pill options model locked (replaces the earlier radio group); v0.2 candidates pruned to what a local-only Reckon can actually support; Reckoning generation-moment noted as a Phase D orb experiment.*
 
 ---
 
@@ -191,7 +191,7 @@ Modal — settled, not open for revisiting. Opens over whatever screen the user 
 
 **Edit-mode persistence rule.** Once a Sketch exists, edits flow into it as they happen: text fields save on blur, structured fields (options, tags, project) save on mutation. There is no Save button in edit mode and no autosave debounce — IndexedDB writes are effectively instant locally, and a debounce would only invent a "did it save?" gap that then wants a saved-indicator, which is a rabbit hole not worth v0.1. The ✕ button is the only exit and closes cleanly; there is no cancel/discard, because everything is already saved. A "revert this session's changes" affordance is parked for v0.2 if it ever earns its way in.
 
-**Deletion of options in edit mode is intentionally frictionless.** The radio-group model means only one option can be chosen at Lock-in, so removing an unwanted option row (× on the row) writes immediately with no confirmation dialog. Exploration should be low-friction; ceremony lives at Lock-in, not at every micro-edit. This stance may be revisited after real user feedback but is locked for v0.1.
+**Deletion of options in edit mode is intentionally frictionless.** Only one option can lean at a time, and only that lean pre-selects into the Lock-in ceremony, so removing an unwanted option row (× on the row) writes immediately with no confirmation dialog. Exploration should be low-friction; ceremony lives at Lock-in, not at every micro-edit. This stance may be revisited after real user feedback but is locked for v0.1.
 
 - **Sketch state:** prominent "Lock in as decision" CTA with press-and-hold gesture (HOLD pill visible). Ceremony without a separate confirmation modal.
 - **Decision state:** unselected options rendered with strikethrough (the archaeology of the thinking, not discarded chaff). Sealed section at the bottom with wax-seal monogram and "Sealed [date/time]" + "Break the seal" reversal affordance. Tags remain editable; core content is locked.
