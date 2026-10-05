@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 
 import Sidebar from "@/components/layout/Sidebar"
 
@@ -7,25 +7,22 @@ import Sidebar from "@/components/layout/Sidebar"
  * on the right. The min-h-screen + flex row lets the sidebar stretch to full
  * viewport height so its footer can pin to the bottom via `mt-auto`.
  *
- * Background: Home gets the `.bg-canvas-dots` treatment per locked
- * decision #9 (dotted-canvas surface); everywhere else stays on the flat
- * `bg-bg-page`. The Home-only scope is intentional — the dot alpha / tile
- * needs real-browser eyeballing before we roll it out app-wide. Promotion
- * is a one-line change: drop the `pathname === "/"` check so the dots
- * always render.
+ * Background: every screen carries the `.bg-canvas-dots` treatment per
+ * locked decision #9 (dotted-canvas surface), layered over `bg-bg-page`.
+ * Scope was Home-only through Session 8 while the dot values were being
+ * eyeballed; they settled 2026-10-05 and the route check came out, so the
+ * canvas is now uniform across the app. Values and the reasoning behind
+ * them live in `globals.css` under "Canvas dots".
  *
- * String-concatenated instead of via `cn()` because tailwind-merge doesn't
- * know `.bg-canvas-dots` is a background-image-only utility and could
- * dedupe it against `bg-bg-page` under the shared `bg-*` prefix. Direct
- * concatenation keeps both classes on the element for the browser to
- * layer naturally.
+ * Both classes are written out together rather than composed via `cn()`:
+ * tailwind-merge doesn't know `.bg-canvas-dots` is a background-image-only
+ * utility and could dedupe it against `bg-bg-page` under the shared `bg-*`
+ * prefix. Keeping them as one literal string lets the browser layer them
+ * naturally.
  */
 export default function AppShell() {
-  const { pathname } = useLocation()
-  const canvasDots = pathname === "/" ? " bg-canvas-dots" : ""
-
   return (
-    <div className={`flex min-h-screen items-stretch bg-bg-page${canvasDots}`}>
+    <div className="flex min-h-screen items-stretch bg-bg-page bg-canvas-dots">
       <Sidebar />
       <main className="min-w-0 flex-1 p-8">
         <Outlet />

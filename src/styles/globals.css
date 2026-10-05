@@ -370,23 +370,38 @@
 
 /* ─── Canvas dots (dotted-canvas surface treatment) ───────────────────────
    Per locked decision #9 in memory (project_reckon_locked_decisions).
-   Applied to the Home route in AppShell for now; promotion to app-wide is
-   a one-line change (drop the pathname check).
+   Applied app-wide via AppShell.
 
-   Values are CSS custom properties on :root so alpha / tile / dot radius
-   can be tuned against the live browser render without a rebuild — open
-   DevTools and edit the values on :root, then move settled numbers back
-   in here.
+   Values settled 2026-10-05 against a live side-by-side comparison
+   ("M40"). Three things the tuning pass established, so they don't get
+   re-litigated:
+
+   1. Dot DIAMETER is the lever that decides whether this reads as paper
+      grain or as a dot field — not alpha. At Ø2 the browser draws a
+      resolvable circle, so no alpha is low enough to stop the eye reading
+      "small circle." Ø1 falls under one device pixel and antialiases into
+      grain. Ø1.5 was tested and rejected: it regains the circle edge.
+   2. Small-and-darker beats large-and-paler. Hence graychateau-500 at a
+      low alpha rather than a lighter shade carrying more.
+   3. NO feather on the transparent stop. A feather helps at Ø2 but is
+      counterproductive sub-pixel — it spreads an already-sub-pixel mark
+      across more antialiasing, losing the dot without gaining softness.
+
+   graychateau is the "Disabled / neutral gray" ramp, so this is a
+   deliberate raw-ramp usage outside that semantic. Logged as an exception
+   in docs/Variable_Inventory.md § Canvas dots — no new token by decision.
+   Neutral gray beats sanmarino here: a blue-keyed dot is a sibling of the
+   text colors and reads as an applied element rather than as the surface.
 
    Composes with a base background color (bg-bg-page); this utility only
    sets background-image + background-size, so it stacks cleanly instead
    of overriding the page color. */
 
 :root {
-  /* sanmarino-300 at α 0.6 — matches locked-decision spec */
-  --canvas-dot-color:  color-mix(in srgb, var(--color-sanmarino-300) 60%, transparent);
-  --canvas-dot-radius: 1px;   /* visible diameter is 2× this */
-  --canvas-dot-tile:   24px;
+  /* graychateau-500 at α 0.40 — "M40", settled on live comparison */
+  --canvas-dot-color:  color-mix(in srgb, var(--color-graychateau-500) 40%, transparent);
+  --canvas-dot-radius: 0.5px;  /* visible diameter is 2× this — sub-pixel on purpose */
+  --canvas-dot-tile:   12px;
 }
 
 @utility bg-canvas-dots {

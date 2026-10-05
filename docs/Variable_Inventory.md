@@ -220,6 +220,29 @@ Current working rule — to be validated once destructive components are built, 
 
 ---
 
+### Canvas dots — raw-ramp exception
+
+The dotted-canvas surface treatment (`.bg-canvas-dots`, applied app-wide in `AppShell`) draws its dot color straight from **`graychateau/500`** at α 0.40, with no semantic alias in between. That is a deliberate exception to the "reach for semantic aliases first" rule, logged here rather than silently shipped.
+
+| | Value | Why |
+|---|---|---|
+| Color | `graychateau/500` @ **40%** | Neutral, not blue — see below |
+| Dot diameter | **Ø1** (`--canvas-dot-radius: 0.5px`) | Sub-pixel on purpose |
+| Grid pitch | **12px** | |
+| Gradient stop | hard, **no feather** | |
+
+**Why no new token.** A `canvas/dot` alias would be the orthodox answer, but the foundation is frozen (`CLAUDE.md`, 2026-07-03) and one decorative background does not justify thawing it. Decided 2026-10-05: use the ramp shade directly and record the exception. Revisit only if a second surface treatment wants the same value — two consumers would make the alias earn itself.
+
+**Why graychateau and not sanmarino.** The original implementation used `sanmarino/300`, keyed to the blue the rest of the system runs on. That is precisely what made it fail: a blue-tinted dot is a sibling of the text colors, so it participates in the palette and reads as *an element someone applied* rather than as the surface the app sits on. A neutral gray recedes. This is the one place where matching the system palette was the wrong instinct.
+
+**Why these numbers.** Settled against a live side-by-side comparison, not derived. Dot *diameter* — not alpha — decides whether the field reads as paper grain or as dots: at Ø2 the browser draws a resolvable circle and no alpha is low enough to stop the eye reading "small circle"; at Ø1 the mark falls under one device pixel and antialiases into grain. Ø1.5 was tested and rejected — it buys presence by regaining the circle edge. Small-and-darker beats large-and-paler, hence a 500 shade at low alpha rather than a lighter one carrying more. The transparent stop is hard: feathering helps at Ø2 but is counterproductive sub-pixel.
+
+**Known variance.** Ø1 is sub-pixel, so it renders marginally softer at 1× and crisper at 2×. Accepted for decorative grain — the alternative is Ø2, which is the look this pass set out to fix.
+
+These values live as `:root` custom properties in `globals.css` (`--canvas-dot-color` / `-radius` / `-tile`), **not** under `@theme`. They are tuning knobs for one utility, not design tokens, and have no Figma counterpart — so they are deliberately absent from the ramps and semantic tables above.
+
+---
+
 ## Spacing
 
 Single collection, FLOAT, scope `GAP` (covers itemSpacing + padding). 4px scale mirroring Tailwind.
