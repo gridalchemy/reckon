@@ -2,7 +2,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 
 import AppShell from "@/components/layout/AppShell"
 import AboutRoute from "@/routes/about"
+import DatenschutzRoute from "@/routes/datenschutz"
 import HomeRoute from "@/routes/home"
+import ImpressumRoute from "@/routes/impressum"
 import LibraryRoute from "@/routes/library"
 import ReckoningRoute from "@/routes/reckoning"
 
@@ -21,6 +23,8 @@ function App() {
           <Route path="library" element={<LibraryRoute />} />
           <Route path="reckoning" element={<ReckoningRoute />} />
           <Route path="about" element={<AboutRoute />} />
+          <Route path="impressum" element={<ImpressumRoute />} />
+          <Route path="datenschutz" element={<DatenschutzRoute />} />
           {import.meta.env.DEV ? (
             <Route path="dev/db" element={<DevDbRoute />} />
           ) : null}

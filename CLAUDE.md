@@ -130,7 +130,7 @@ If a request isn't here AND isn't in v0.1 scope, treat it as a fresh idea — su
 ## Local development
 
 ```powershell
-npm install        # first time only
+npm install        # first time only (then copy .env.example → .env.local and fill it in)
 npm run dev        # dev server on http://localhost:5173 with HMR
 npm run build      # tsc -b && vite build → outputs to ./dist
 npm run preview    # serve the built bundle locally to sanity-check production
@@ -138,3 +138,7 @@ npm run lint       # ESLint over src/
 ```
 
 Production deploy is automatic: any push to `main` triggers a Cloudflare Pages build. Live preview: https://reckon-a5q.pages.dev (the `*.pages.dev` subdomain stays through v0.1; the custom-domain swap is a post-launch task).
+
+**Invite-only.** Production (`reckon-a5q.pages.dev`) and every preview URL (`*.reckon-a5q.pages.dev`) sit behind Cloudflare Access (Zero Trust Free, team domain `gridalchemy`, email one-time PIN). Two Access apps, "Reckon – production" and "Reckon – previews", share one reusable policy, "Reckon Invitees" — add or remove invitee emails there, never switch it to "everyone". Public face is the portfolio case study; the live demo is on request. A custom domain will need its own Access app before it goes live.
+
+**Legal contact env vars.** `VITE_LEGAL_NAME` and `VITE_LEGAL_EMAIL` feed the Impressum and Datenschutz (`src/lib/legal.ts`). They live in Cloudflare Pages → Settings → Variables and secrets (Production and Preview) and in a git-ignored `.env.local` locally — copy `.env.example`. A production build fails without them, by design. The real name never goes into the repo.

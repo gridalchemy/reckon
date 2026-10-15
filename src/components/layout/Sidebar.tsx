@@ -1,6 +1,6 @@
 import { Home, Info, Library, Plus, Settings2, Sparkles } from "lucide-react"
-import { useState } from "react"
-import { useLocation } from "react-router-dom"
+import { Fragment, useState } from "react"
+import { Link, useLocation } from "react-router-dom"
 
 import NavItem from "@/components/layout/NavItem"
 import { NewSketchModal } from "@/components/new-sketch-modal"
@@ -23,6 +23,13 @@ const ROUTED_ITEMS = [
   { icon: Home, label: "Home", to: "/" },
   { icon: Library, label: "Library", to: "/library" },
   { icon: Sparkles, label: "Reckoning", to: "/reckoning" },
+] as const
+
+// Kept in German in both UI languages: German visitors scan for exactly these
+// words, and CLAUDE.md § Voice names them as required footer links.
+const LEGAL_LINKS = [
+  { label: "Impressum", to: "/impressum" },
+  { label: "Datenschutz", to: "/datenschutz" },
 ] as const
 
 export default function Sidebar() {
@@ -83,11 +90,18 @@ export default function Sidebar() {
       <footer className="mt-auto flex items-center justify-center gap-1.5 text-xs leading-4 text-text-secondary-solid">
         <span>v0.1</span>
         <span aria-hidden>·</span>
-        {/* Inactive placeholders — swap to <a href="/datenschutz"> and
-            <a href="/impressum"> when compliance content lands. */}
-        <span>Datenschutz</span>
-        <span aria-hidden>·</span>
-        <span>Impressum</span>
+        {LEGAL_LINKS.map(({ label, to }, i) => (
+          <Fragment key={to}>
+            {i > 0 ? <span aria-hidden>·</span> : null}
+            <Link
+              to={to}
+              aria-current={pathname === to ? "page" : undefined}
+              className="rounded-sm transition-colors hover:text-text-strong hover:underline focus-visible:shadow-focus focus-visible:outline-none aria-[current=page]:text-text-strong"
+            >
+              {label}
+            </Link>
+          </Fragment>
+        ))}
       </footer>
 
       {/* Modal renders via portal, so tree position is state-owner only. */}
