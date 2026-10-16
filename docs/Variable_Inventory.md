@@ -239,7 +239,24 @@ The dotted-canvas surface treatment (`.bg-canvas-dots`, applied app-wide in `App
 
 **Known variance.** Ø1 is sub-pixel, so it renders marginally softer at 1× and crisper at 2×. Accepted for decorative grain — the alternative is Ø2, which is the look this pass set out to fix.
 
-These values live as `:root` custom properties in `globals.css` (`--canvas-dot-color` / `-radius` / `-tile`), **not** under `@theme`. They are tuning knobs for one utility, not design tokens, and have no Figma counterpart — so they are deliberately absent from the ramps and semantic tables above.
+These values live as `:root` custom properties in `globals.css` (`--canvas-dot-color` / `-radius` / `-tile`), **not** under `@theme`. They are tuning knobs for one utility, not design tokens — so they are deliberately absent from the ramps and semantic tables above. They do, however, have a Figma counterpart, mapped below.
+
+**Figma mirror.** The treatment is built as a Pattern fill driven by a tile node, `__dot-tile__`, applied to each screen frame on top of the `bg/page` solid fill. The tile lives on the **🧩 Components** page in the **Patterns** section, beside `NavIcons` — the other source frame that exists to be referenced rather than instanced.
+
+| CSS | Figma |
+|---|---|
+| `--canvas-dot-tile: 12px` | `__dot-tile__` frame, 12 × 12 |
+| `--canvas-dot-radius: 0.5px` | `dot` ellipse, 1 × 1, at x 5.5 / y 5.5 |
+| dot color `graychateau-500` | `dot` fill bound to `graychateau/500` |
+| alpha `40%` | Pattern fill opacity **40%** (the ellipse itself stays at 100%) |
+| hard gradient stop | solid ellipse, no blur, no gradient |
+| `background-repeat` grid | Tile type **rectangular**, scale 100%, spacing 0 / 0 |
+
+The alpha lives on the Pattern fill, never on the ellipse — the two multiply, so splitting them would make the Figma panel stop reading as the spec. The half-pixel dot position is intentional: CSS centres a 0.5px-radius dot at 6,6, so it straddles a pixel boundary, and that straddle is the sub-pixel softness the treatment depends on.
+
+**`__dot-tile__` is deliberately a frame, not a component.** Nothing instances it — a Pattern fill points at the node directly — so component status would buy organisation, not reuse, and it would cost real work: see the id caveat below. Verified 2026-10-17: a Pattern fill **does** resolve when its source sits on a different page, so moving the tile off the Screens page broke nothing.
+
+**Figma edits here are partly manual.** The Plugin API can read `PATTERN` fills but not write them (the write validator accepts `SOLID`, gradients, `IMAGE`, `VIDEO`, `SHADER` — not `PATTERN`), so Pattern fill opacity and the tile source can only be changed by hand in the UI. The tile node's own geometry and fill *are* scriptable. Related: `createComponentFromNode` does not preserve the node id, so converting `__dot-tile__` into a component orphans every Pattern fill pointing at it and each screen must be re-pointed by hand.
 
 ---
 

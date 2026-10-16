@@ -81,6 +81,7 @@ Reckon has three living documents plus this file. Each owns one thing; drift bet
 
 **Sync rules (enforce these — don't wait to be asked):**
 - **Figma moves first, code mirrors.** A Variable_Inventory edit and its `globals.css` mirror land in the *same commit* whenever possible.
+- **Exception — render-dependent values move code-first.** Anything whose correctness can only be judged in a real browser render — sub-pixel geometry, antialiasing, faint alpha, blur — is tuned live in the browser, then mirrored *back* into Figma. Figma lagging code on these is expected, not drift. The canvas dots are the precedent (2026-10-05): the Figma-first version looked wrong live, and the fix was only findable in a browser. When this happens, say so in the commit and bring Figma level in the same or next session.
 - **At the start of every code session**, before building anything: spot-check `globals.css` against `Variable_Inventory.md` (values *and* names). If they've drifted, flag it and run the mirror pass first — the playbook is: read the inventory, update `@theme`, grep `src/` for renamed utility consumers.
 - **If any session changes a fact stated in this file** (token names, worker timing, scope, fonts), update this file in the same session and say so out loud.
 - The foundation is **frozen** as of 2026-07-03: no new tokens, primitives, or conventions docs unless a screen under construction forces one.
