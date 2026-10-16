@@ -243,6 +243,7 @@ Decisions that look inconsistent on inspection but are intentional. Each one ear
 | **Button** | Disabled = opacity 75% on the matching Default per Type (not a unified grey disabled) | Preserves Type semantics. Disabled Primary still reads as the main mulberry CTA, just unavailable. Surfaces/inputs will use designated disabled tokens instead — see § States and tokens. |
 | **Button** | Secondary uses a soft (sanmarino-50/100) surface, not the saturated dark sanmarino | A fully saturated Secondary competes with Primary for visual emphasis. The light surface gives Primary the saturated lane and Secondary the soft lane — clearer hierarchy, modern systems convention (shadcn, Linear, Vercel). |
 | **WaxSeal** *(logged ahead of build)* | The "R" monogram uses Domine 18/16 — line-height smaller than font-size — instead of a shared text style | A one-off geometric hack to visually center a single-glyph monogram in the 44px sealed disc. Encoding it as a text style would pollute the ramp. Handled inline in the component with a comment noting why. |
+| **LegalPage language toggle** (DE/EN on Impressum + Datenschutz) | Same shape as the Reckoning range toggle (bordered rounded-xl container, rounded-lg segments) but the selected segment is Mulberry (`action-primary`), not the neutral selected surface | Switching the language of a legal document is a different job than picking a data range. Shape stays consistent; the colour marks it as a mode switch. Decided 2026-10-15. |
 
 ---
 
