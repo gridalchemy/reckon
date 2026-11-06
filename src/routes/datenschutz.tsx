@@ -1,3 +1,4 @@
+import { LegalAddress } from "@/components/legal/legal-address"
 import { LegalEmail } from "@/components/legal/legal-email"
 import { LegalLink } from "@/components/legal/legal-link"
 import { LegalPage } from "@/components/legal/legal-page"
@@ -9,7 +10,7 @@ import { LEGAL_NAME } from "@/lib/legal"
  *
  * Covers only what Reckon does today: Cloudflare Pages hosting, Cloudflare
  * Access (invite-only gate, one-time PIN by email), IndexedDB local storage,
- * self-hosted fonts, email contact, GDPR rights. Facts checked against
+ * self-hosted fonts, email and postal contact, GDPR rights. Facts checked against
  * primary sources on 2026-10-15 (Cloudflare privacy policy + DPA + Access
  * docs, TDDDG § 25, LfDI RLP imprint).
  *
@@ -25,8 +26,11 @@ function DatenschutzDe() {
         <p>
           {LEGAL_NAME}
           <br />
-          Rheinland-Pfalz, Deutschland
+          <LegalAddress />
           <br />
+          Deutschland
+        </p>
+        <p>
           E-Mail: <LegalEmail />
         </p>
       </LegalSection>
@@ -110,11 +114,17 @@ function DatenschutzDe() {
         </p>
       </LegalSection>
 
-      <LegalSection title="Kontakt per E-Mail">
+      <LegalSection title="Kontakt per E-Mail oder Post">
         <p>
           Wenn Sie mir schreiben, verwende ich Ihre Angaben ausschließlich, um
           Ihre Anfrage zu beantworten, und lösche sie, sobald sie dafür nicht
           mehr benötigt werden. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO.
+        </p>
+        <p>
+          Post an die oben genannte Anschrift geht zunächst bei meinem
+          Adressdienstleister ein, der Autorenglück UG (haftungsbeschränkt),
+          Albert-Einstein-Straße 47, 02977 Hoyerswerda. Sie nimmt Sendungen für
+          mich entgegen und leitet sie an mich weiter.
         </p>
       </LegalSection>
 
@@ -155,8 +165,11 @@ function DatenschutzEn() {
         <p>
           {LEGAL_NAME}
           <br />
-          Rhineland-Palatinate, Germany
+          <LegalAddress />
           <br />
+          Germany
+        </p>
+        <p>
           Email: <LegalEmail />
         </p>
       </LegalSection>
@@ -236,11 +249,17 @@ function DatenschutzEn() {
         </p>
       </LegalSection>
 
-      <LegalSection title="Contact by email">
+      <LegalSection title="Contact by email or post">
         <p>
           If you write to me, I use your details only to answer your message
           and delete them once they're no longer needed for that. The legal
           basis is Art. 6(1)(f) GDPR.
+        </p>
+        <p>
+          Post sent to the address above first reaches my address service
+          provider, Autorenglück UG (haftungsbeschränkt),
+          Albert-Einstein-Straße 47, 02977 Hoyerswerda, which accepts it on my
+          behalf and forwards it to me.
         </p>
       </LegalSection>
 

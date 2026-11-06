@@ -6,7 +6,11 @@ import tailwindcss from '@tailwindcss/vite'
 // Legal contact details are injected at build time (see src/lib/legal.ts).
 // A production build without them would ship an empty Impressum, so fail
 // loudly instead. Dev keeps running with blanks.
-const REQUIRED_LEGAL_ENV = ['VITE_LEGAL_NAME', 'VITE_LEGAL_EMAIL'] as const
+const REQUIRED_LEGAL_ENV = [
+  'VITE_LEGAL_NAME',
+  'VITE_LEGAL_EMAIL',
+  'VITE_LEGAL_ADDRESS',
+] as const
 
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => {

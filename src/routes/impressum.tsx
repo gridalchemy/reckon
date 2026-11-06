@@ -1,3 +1,4 @@
+import { LegalAddress } from "@/components/legal/legal-address"
 import { LegalEmail } from "@/components/legal/legal-email"
 import { LegalLink } from "@/components/legal/legal-link"
 import { LegalPage } from "@/components/legal/legal-page"
@@ -7,11 +8,9 @@ import { LEGAL_NAME } from "@/lib/legal"
 /**
  * Impressum (legal notice), German + English.
  *
- * Content follows Lia's portfolio Impressum:
- * name + region + email, no postal address — a deliberate choice made
- * 2026-10-15 after the c/o options fell through. Reckon sits behind
- * Cloudflare Access (invite-only), which keeps it a small, individually
- * invited circle. Name and email come from build-time env vars
+ * Content follows Lia's portfolio Impressum: name + ladungsfähige c/o
+ * address + email. The address is a paid service, so the home address stays
+ * private. Name, address, and email come from build-time env vars
  * (src/lib/legal.ts) so they stay out of the public repo.
  *
  * No liability paragraph citations on purpose: the common "§§ 8 bis 10 DDG"
@@ -25,7 +24,9 @@ function ImpressumDe() {
         <p>
           {LEGAL_NAME}
           <br />
-          Rheinland-Pfalz, Deutschland
+          <LegalAddress />
+          <br />
+          Deutschland
         </p>
       </LegalSection>
 
@@ -102,7 +103,9 @@ function ImpressumEn() {
         <p>
           {LEGAL_NAME}
           <br />
-          Rhineland-Palatinate, Germany
+          <LegalAddress />
+          <br />
+          Germany
         </p>
       </LegalSection>
 
